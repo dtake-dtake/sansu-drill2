@@ -1,0 +1,72 @@
+[
+  {
+    "file": "drills/九九.html",
+    "name": "九九",
+    "ns": "multiplication_1to9_v6_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/一の段の九九（ばらばら）.html",
+    "name": "一の段の九九（ばらばら）",
+    "ns": "multiplication1dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/二の段の九九（ばらばら）.html",
+    "name": "二の段の九九（ばらばら）",
+    "ns": "multiplication2dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/三の段の九九（ばらばら）.html",
+    "name": "三の段の九九（ばらばら）",
+    "ns": "multiplication3dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/四の段の九九（ばらばら）.html",
+    "name": "四の段の九九（ばらばら）",
+    "ns": "multiplication4dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/五の段の九九（ばらばら）.html",
+    "name": "五の段の九九（ばらばら）",
+    "ns": "multiplication5dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/六の段の九九（ばらばら）.html",
+    "name": "六の段の九九（ばらばら）",
+    "ns": "multiplication6dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/七の段の九九（ばらばら）.html",
+    "name": "七の段の九九（ばらばら）",
+    "ns": "multiplication7dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/八の段の九九（ばらばら）.html",
+    "name": "八の段の九九（ばらばら）",
+    "ns": "multiplication8dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  },
+  {
+    "file": "drills/九の段の九九（ばらばら）.html",
+    "name": "九の段の九九（ばらばら）",
+    "ns": "multiplication9dan_v1_",
+    "grade": "2",
+    "category": "九九"
+  }
+]
