@@ -55,13 +55,13 @@
   </table>
 
   <script>
-    // ----------------------------------------------------------------------------
-    // ●1) drills.json を読み込み、配列 buildList を組み立てる
-    // ----------------------------------------------------------------------------
+    // ------------------------------------------------------------
+    // 1) drills.json を読み込み、配列 buildList を生成
+    // ------------------------------------------------------------
     async function loadDrills() {
       try {
         const resp = await fetch('data/drills.json');
-        if (!resp.ok) throw new Error('drills.json の読み込みに失敗しました: ' + resp.status);
+        if (!resp.ok) throw new Error('drills.json の読み込みに失敗: ' + resp.status);
         return await resp.json();
       } catch (e) {
         console.error(e);
@@ -69,27 +69,28 @@
       }
     }
 
-    // ----------------------------------------------------------------------------
-    // ●2) localStorage からハイスコア・履歴・クリア回数を取得して一覧用オブジェクトを生成
-    // ----------------------------------------------------------------------------
+    // ------------------------------------------------------------
+    // 2) localStorage からハイスコア・履歴・クリア回数を取得して buildList を組み立て
+    // ------------------------------------------------------------
     const statusOrder = { 'SS': 6, 'S': 5, 'A': 4, 'B': 3, 'C': 2, 'D': 1, '―': 0 };
 
     function buildListFromDrills(drills) {
       return drills.map(d => {
-        // highScore
         const hs = localStorage.getItem(d.ns + 'highScore') || '―';
-        // clearCount
         const clears = localStorage.getItem(d.ns + 'clearCount') || '0';
-        // history から最新ステータス・日時
+
         let status = '―', dt = '―';
         try {
-          const historyJSON = localStorage.getItem(d.ns + 'history') || '[]';
-          const arr = JSON.parse(historyJSON);
+          const histJSON = localStorage.getItem(d.ns + 'history') || '[]';
+          const arr = JSON.parse(histJSON);
           if (arr.length > 0) {
             status = arr[0].status || status;
             dt = arr[0].datetime || dt;
           }
-        } catch { /* エラー時は初期値を保持 */ }
+        } catch {
+          // パースエラー等あればデフォルトのまま
+        }
+
         return {
           grade:    d.grade,
           category: d.category,
@@ -103,23 +104,21 @@
       });
     }
 
-    // ----------------------------------------------------------------------------
-    // ●3) ソートキー・向きの初期値
-    // ----------------------------------------------------------------------------
+    // ------------------------------------------------------------
+    // 3) ソートキー・向きの初期値
+    // ------------------------------------------------------------
     let sort = { key: 'name', dir: null };
 
-    // ----------------------------------------------------------------------------
-    // ●4) ソート用ヘッダクリックの設定
-    // ----------------------------------------------------------------------------
+    // ------------------------------------------------------------
+    // 4) ヘッダクリックでソート設定を切り替える
+    // ------------------------------------------------------------
     function attachSortHandlers() {
       document.querySelectorAll('th[data-key]').forEach(th => {
         th.addEventListener('click', () => {
           const key = th.getAttribute('data-key');
           if (sort.key === key && sort.dir) {
-            // 同じ列がクリックされたら昇順<->降順を切り替え
             sort.dir = (sort.dir === 'asc' ? 'desc' : 'asc');
           } else {
-            // 別の列をクリックしたら、その列を降順でソート開始
             sort.key = key;
             sort.dir = 'desc';
           }
@@ -128,31 +127,27 @@
       });
     }
 
-    // ----------------------------------------------------------------------------
-    // ●5) テーブル描画：sort.dir === null のときはソートせず、そのまま buildList の順序を使う
-    // ----------------------------------------------------------------------------
+    // ------------------------------------------------------------
+    // 5) テーブル描画（sort.dir === null なら元の JSON 順）
+    // ------------------------------------------------------------
     function renderTable() {
       let data;
       if (sort.dir === null) {
-        // 初期表示：JSON の並び順そのまま
         data = [...buildList];
       } else {
-        // ソートが指定されている場合
         data = [...buildList].sort((a, b) => {
           let cmp = 0;
+          // 数値比較が必要な列
           if (sort.key === 'hs' || sort.key === 'clears') {
-            // 数値として比較
             cmp = (+a[sort.key] || 0) - (+b[sort.key] || 0);
           } else if (sort.key === 'status') {
-            // ステータスは事前に定義した順序で比較
             cmp = statusOrder[a.status] - statusOrder[b.status];
           } else if (sort.key === 'dt') {
-            // 日付を比較。未履歴なら最小値として扱う
-            const t1 = a.dt === '―' ? 0 : new Date(a.dt).getTime();
-            const t2 = b.dt === '―' ? 0 : new Date(b.dt).getTime();
+            const t1 = (a.dt === '―') ? 0 : new Date(a.dt).getTime();
+            const t2 = (b.dt === '―') ? 0 : new Date(b.dt).getTime();
             cmp = t1 - t2;
           } else {
-            // 文字列（学年・カテゴリ・名前）の場合
+            // grade, category, name は文字列比較
             cmp = a[sort.key].localeCompare(b[sort.key], 'ja');
           }
           return (sort.dir === 'asc' ? 1 : -1) * cmp;
@@ -176,9 +171,9 @@
       });
     }
 
-    // ----------------------------------------------------------------------------
-    // ●6) onload 時に fetch→ビルド→描画→ソートハンドラ設定 を実行
-    // ----------------------------------------------------------------------------
+    // ------------------------------------------------------------
+    // 6) ページロード時に fetch → build → render → ソート設定 を実行
+    // ------------------------------------------------------------
     let buildList = [];
     window.onload = async () => {
       const drills = await loadDrills();
