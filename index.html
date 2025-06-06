@@ -89,7 +89,7 @@
             status = arr[0].status || status;
             dt = arr[0].datetime || dt;
           }
-        } catch { /* 空のまま */ }
+        } catch { /* エラー時は初期値を保持 */ }
         return {
           grade:    d.grade,
           category: d.category,
@@ -116,8 +116,10 @@
         th.addEventListener('click', () => {
           const key = th.getAttribute('data-key');
           if (sort.key === key && sort.dir) {
+            // 同じ列がクリックされたら昇順<->降順を切り替え
             sort.dir = (sort.dir === 'asc' ? 'desc' : 'asc');
           } else {
+            // 別の列をクリックしたら、その列を降順でソート開始
             sort.key = key;
             sort.dir = 'desc';
           }
@@ -135,17 +137,22 @@
         // 初期表示：JSON の並び順そのまま
         data = [...buildList];
       } else {
+        // ソートが指定されている場合
         data = [...buildList].sort((a, b) => {
           let cmp = 0;
           if (sort.key === 'hs' || sort.key === 'clears') {
+            // 数値として比較
             cmp = (+a[sort.key] || 0) - (+b[sort.key] || 0);
           } else if (sort.key === 'status') {
+            // ステータスは事前に定義した順序で比較
             cmp = statusOrder[a.status] - statusOrder[b.status];
           } else if (sort.key === 'dt') {
+            // 日付を比較。未履歴なら最小値として扱う
             const t1 = a.dt === '―' ? 0 : new Date(a.dt).getTime();
             const t2 = b.dt === '―' ? 0 : new Date(b.dt).getTime();
             cmp = t1 - t2;
           } else {
+            // 文字列（学年・カテゴリ・名前）の場合
             cmp = a[sort.key].localeCompare(b[sort.key], 'ja');
           }
           return (sort.dir === 'asc' ? 1 : -1) * cmp;
