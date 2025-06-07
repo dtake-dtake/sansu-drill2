@@ -38,16 +38,8 @@
       cursor: pointer;
       position: relative;
     }
-    th.sorted-asc::after {
-      content: "▲";
-      position: absolute;
-      right: 8px;
-    }
-    th.sorted-desc::after {
-      content: "▼";
-      position: absolute;
-      right: 8px;
-    }
+    th.sorted-asc { background: orange; }
+    th.sorted-desc { background: blue; color: white; }
     tr:hover {
       background: #fafafa;
     }
