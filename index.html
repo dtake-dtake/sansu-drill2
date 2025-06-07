@@ -38,8 +38,9 @@
       cursor: pointer;
       position: relative;
     }
-    th.sorted-asc { background: orange; }
-    th.sorted-desc { background: blue; color: white; }
+    th.sorted-asc { background: #b2ebf2; }
+    th.sorted-desc { background: #80deea; }
+    th.no-sort { cursor: default; }
     tr:hover {
       background: #fafafa;
     }
@@ -61,7 +62,7 @@
         <th data-key="grade">学年</th>
         <th data-key="unit">単元</th>
         <th data-key="no">No.</th>
-        <th data-key="name">名前</th>
+        <th class="no-sort">名前</th>
         <th data-key="status">ステータス</th>
         <th data-key="dt">最終チャレンジ</th>
         <th data-key="hs">ハイスコア</th>
