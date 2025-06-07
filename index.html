@@ -2,14 +2,24 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ドリル一覧（シンプル版）</title>
+  <title>ドリル一覧（リンク版）</title>
+  <style>
+    /* リンクを青文字に */
+    #drill-list a {
+      color: blue;
+      text-decoration: none;
+    }
+    #drill-list a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <h1>ドリル一覧</h1>
   <ul id="drill-list"></ul>
 
   <script>
-    // data/drills.json を読み込んで、name のみをリスト表示
+    // data/drills.json を読み込み、name と file プロパティでリンクリストを作成
     fetch('data/drills.json')
       .then(response => {
         if (!response.ok) throw new Error('JSON 読み込み失敗: ' + response.status);
@@ -19,14 +29,18 @@
         const ul = document.getElementById('drill-list');
         drills.forEach(d => {
           const li = document.createElement('li');
-          li.textContent = d.name;
+          // <a href="…">ドリル名</a>
+          const a = document.createElement('a');
+          a.textContent = d.name;
+          a.href = d.file;
+          a.target = '_blank';  // 別タブで開きたい場合は不要なら削除
+          li.appendChild(a);
           ul.appendChild(li);
         });
       })
       .catch(err => {
         console.error(err);
-        const ul = document.getElementById('drill-list');
-        ul.textContent = 'データの読み込みに失敗しました。';
+        document.getElementById('drill-list').textContent = 'データの読み込みに失敗しました。';
       });
   </script>
 </body>
