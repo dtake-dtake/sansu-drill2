@@ -13,13 +13,20 @@
       text-align: center;
       margin-bottom: 8px;
     }
-    #search {
-      display: block;
-      margin: 0 auto 12px;
+    #controls {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    #controls select,
+    #controls input {
+      margin: 0 4px;
       padding: 6px;
-      width: 240px;
       border: 1px solid #ccc;
       border-radius: 4px;
+    }
+    #search {
+      width: 240px;
     }
     table {
       width: 100%;
@@ -55,7 +62,11 @@
 </head>
 <body>
   <h1>算数学習アプリ</h1>
-  <input type="text" id="search" placeholder="ドリル名で絞り込み" />
+  <div id="controls">
+    <select id="gradeFilter"></select>
+    <select id="unitFilter"></select>
+    <input type="text" id="search" placeholder="ドリル名で絞り込み" />
+  </div>
   <table id="tocTable">
     <thead>
       <tr>
@@ -105,12 +116,27 @@
           clears
         };
       });
+      }
+
+    function initFilters(drills) {
+      const gradeSel = document.getElementById('gradeFilter');
+      const unitSel = document.getElementById('unitFilter');
+      const grades = [...new Set(drills.map(d => d.grade))].sort((a,b) => a.localeCompare(b,'ja', {numeric:true}));
+      const units = [...new Set(drills.map(d => String(d.unit ?? '')))].filter(v => v !== '').sort((a,b) => (+a) - (+b));
+      gradeSel.innerHTML = '<option value="">すべて</option>' + grades.map(g => `<option value="${g}">${g}</option>`).join('');
+      unitSel.innerHTML = '<option value="">すべて</option>' + units.map(u => `<option value="${u}">${u}</option>`).join('');
     }
 
     // ソート・フィルター
     function filterAndSort(data) {
       const query = document.getElementById('search').value.trim().toLowerCase();
-      let filtered = data.filter(item => item.name.toLowerCase().includes(query));
+      const gradeVal = document.getElementById('gradeFilter').value;
+      const unitVal = document.getElementById('unitFilter').value;
+      let filtered = data.filter(item =>
+        (gradeVal === '' || item.grade === gradeVal) &&
+        (unitVal === '' || String(item.unit) === unitVal) &&
+        item.name.toLowerCase().includes(query)
+      );
       if (!sort.dir) return filtered;
       return filtered.sort((a, b) => {
         let cmp = 0;
@@ -170,8 +196,11 @@
     window.onload = async () => {
       const drills = await loadDrills();
       buildList = buildListFromDrills(drills);
+      initFilters(drills);
       attachSortHandlers();
       document.getElementById('search').addEventListener('input', renderTable);
+      document.getElementById('gradeFilter').addEventListener('change', renderTable);
+      document.getElementById('unitFilter').addEventListener('change', renderTable);
       renderTable();
     };
   </script>
