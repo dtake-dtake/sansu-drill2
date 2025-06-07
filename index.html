@@ -67,6 +67,7 @@
     <thead>
       <tr>
         <th data-key="grade">学年</th>
+        <th data-key="unit">単元</th>
         <th data-key="no">No.</th>
         <th data-key="name">名前</th>
         <th data-key="status">ステータス</th>
@@ -99,7 +100,17 @@
           const hist = JSON.parse(localStorage.getItem(d.ns + 'history') || '[]');
           if (hist.length) { status = hist[0].status || status; dt = hist[0].datetime || dt; }
         } catch {}
-        return { grade: d.grade, no: d.no, name: d.name, file: d.file, status, dt, hs, clears };
+        return {
+          grade: d.grade,
+          unit: d.unit ?? '',
+          no: d.no ?? '',
+          name: d.name,
+          file: d.file,
+          status,
+          dt,
+          hs,
+          clears
+        };
       });
     }
 
@@ -110,8 +121,9 @@
       if (!sort.dir) return filtered;
       return filtered.sort((a, b) => {
         let cmp = 0;
-        switch (sort.key) {
-          case 'no': cmp = (+a.no || 0) - (+b.no || 0); break;
+          switch (sort.key) {
+            case 'unit': cmp = (+a.unit || 0) - (+b.unit || 0); break;
+            case 'no': cmp = (+a.no || 0) - (+b.no || 0); break;
           case 'hs': case 'clears': cmp = (+a[sort.key] || 0) - (+b[sort.key] || 0); break;
           case 'status': cmp = statusOrder[a.status] - statusOrder[b.status]; break;
           case 'dt': cmp = ((a.dt==='―'?0:new Date(a.dt).getTime()) - (b.dt==='―'?0:new Date(b.dt).getTime())); break;
@@ -135,9 +147,10 @@
       const rows = filterAndSort(buildList);
       rows.forEach(item => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item.grade}</td>
-          <td>${item.no}</td>
+          tr.innerHTML = `
+            <td>${item.grade}</td>
+            <td>${item.unit}</td>
+            <td>${item.no}</td>
           <td><a href="${item.file}" target="_blank">${item.name}</a></td>
           <td>${item.status}</td>
           <td>${item.dt}</td>
