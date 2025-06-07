@@ -123,8 +123,8 @@
       const unitSel = document.getElementById('unitFilter');
       const grades = [...new Set(drills.map(d => d.grade))].sort((a,b) => a.localeCompare(b,'ja', {numeric:true}));
       const units = [...new Set(drills.map(d => String(d.unit ?? '')))].filter(v => v !== '').sort((a,b) => (+a) - (+b));
-      gradeSel.innerHTML = '<option value="">すべて</option>' + grades.map(g => `<option value="${g}">${g}</option>`).join('');
-      unitSel.innerHTML = '<option value="">すべて</option>' + units.map(u => `<option value="${u}">${u}</option>`).join('');
+      gradeSel.innerHTML = '<option value="">学年</option>' + grades.map(g => `<option value="${g}">${g}</option>`).join('');
+      unitSel.innerHTML = '<option value="">単元</option>' + units.map(u => `<option value="${u}">${u}</option>`).join('');
     }
 
     // ソート・フィルター
