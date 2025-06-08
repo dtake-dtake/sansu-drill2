@@ -1,9 +1,8 @@
-<!-- 一の段（ばらばら）HTML: 学年・区分を追加 -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<title>一の段の九九</title>
+<title>二の段の九九</title>
 <style>
   body{font-family:sans-serif;background:#b3ecff;margin:20px;color:#333;font-size:2rem;line-height:1.5;}
   h1,h2{text-align:center;margin:10px 0}
@@ -32,7 +31,7 @@
 </head>
 <body>
   <h1>けいさんドリル</h1>
-  <h2>一のだん（ばらばら）</h2>
+  <h2>二のだん（ばらばら）</h2>
   <div id="problems-wrapper"></div>
   <div class="button-area">
     <button id="check-answers">採点</button>
@@ -55,12 +54,12 @@
   const APP_GRADE    = '2';
   const APP_CATEGORY = '九九';
   /* ===== 定数・ストレージキー ===== */
-  const APP_NS       = "multiplication1dan_v1_";
-  const KEY_HS       = APP_NS + "highScore";
-  const KEY_HISTORY  = APP_NS + "history";
-  const KEY_CLEAR    = APP_NS + "clearCount";
+  const APP_NS      = "multiplication2dan_v1_";
+  const KEY_HS      = APP_NS + "highScore";
+  const KEY_HISTORY = APP_NS + "history";
+  const KEY_CLEAR   = APP_NS + "clearCount";
 
-  const NUM_Q      = 9;   // 1の段は9問
+  const NUM_Q      = 9;   // 2の段は9問
   const TIME_LIMIT = 30;  // スコア計算基準
 
   /* ===== 状態 ===== */
@@ -71,14 +70,14 @@
   const $            = s => document.querySelector(s);
   const $$           = s => document.querySelectorAll(s);
   const now          = () => new Date().toLocaleString();
-  // 150以上でSS、120以上でS、…という5段階判定に変更
+  // 150以上でSS、120以上でS、…という6段階判定に変更
   const statusOf     = s => s >= 150 ? "SS" : s >= 120 ? "S" : s >= 100 ? "A" : s >= 80 ? "B" : s >= 50 ? "C" : "D";
   const scrollCenter = e => e.scrollIntoView({ behavior: "smooth", block: "center" });
   const ls           = localStorage;
 
   function loadAll() {
-    highScore = +ls.getItem(KEY_HS) || 0;
-    clearCount = +ls.getItem(KEY_CLEAR) || 0;
+    highScore  = +ls.getItem(KEY_HS)      || 0;
+    clearCount = +ls.getItem(KEY_CLEAR)   || 0;
     updateHS(); updateClear();
     renderHistory(JSON.parse(ls.getItem(KEY_HISTORY) || '[]'));
   }
@@ -102,8 +101,8 @@
   }
 
   function genProblems() {
-    const nums = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    problems = nums.map(n => ({ a: 1, b: n, ans: n }));
+    const nums = shuffle([1,2,3,4,5,6,7,8,9]);
+    problems = nums.map(n => ({ a: 2, b: n, ans: 2 * n }));
   }
   function showProblems() {
     const wrap = $('#problems-wrapper'); wrap.innerHTML = '';
@@ -114,7 +113,12 @@
       eq.innerHTML = `<span>${p.a}</span><span>×</span><span>${p.b}</span>=`;
       const inp = document.createElement('input'); inp.type = 'number'; inp.id = `ans-${i}`;
       inp.addEventListener('focus', () => scrollCenter(inp));
-      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { const nxt = $(`#ans-${i + 1}`); nxt ? nxt.focus() : $('#check-answers').focus(); } });
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          const nxt = $(`#ans-${i + 1}`);
+          nxt ? nxt.focus() : $('#check-answers').focus();
+        }
+      });
       const icon = document.createElement('span'); icon.id = `icon-${i}`; icon.className = 'result-icon';
       eq.append(inp, icon); row.append(num, eq); wrap.appendChild(row);
     });
@@ -124,33 +128,61 @@
   function enableInputs()  { $$('input[type=number]').forEach(i => i.disabled = false); }
 
   function check() {
-    const btn = $('#check-answers'); btn.disabled = true;
+    $('#check-answers').disabled = true;
     let correct = 0;
     problems.forEach((p, i) => {
       const u    = +$('#ans-' + i).value;
       const icon = $(`#icon-${i}`);
-      icon.textContent = ''; icon.classList.remove('correct', 'wrong');
-      if (u === p.ans) { correct++; icon.textContent = '○'; icon.classList.add('correct'); }
-      else            { icon.textContent = `× (こたえ:${p.ans})`; icon.classList.add('wrong'); }
+      icon.textContent = ''; icon.classList.remove('correct','wrong');
+      if (u === p.ans) {
+        correct++;
+        icon.textContent = '○';
+        icon.classList.add('correct');
+      } else {
+        icon.textContent = `× (こたえ:${p.ans})`;
+        icon.classList.add('wrong');
+      }
     });
     disableInputs();
     const elap  = Math.round((Date.now() - startTime) / 100) / 10;
     const score = Math.floor(correct * 10 * (2 - Math.min(elap / TIME_LIMIT, 1)));
     const status = statusOf(score);
-    $('#result').innerHTML = `スコア: <strong>${score}</strong>　ステータス: <strong>${status}</strong><br>せいかい: ${correct}/${NUM_Q}　じかん: ${elap.toFixed(1)} びょう`;
-    if (score > highScore) { highScore = score; ls.setItem(KEY_HS, highScore); updateHS(); }
+    $('#result').innerHTML =
+      `スコア: <strong>${score}</strong>　ステータス: <strong>${status}</strong><br>` +
+      `正解数: ${correct}/${NUM_Q}　時間: ${elap.toFixed(1)} 秒`;
+    if (score > highScore) {
+      highScore = score;
+      ls.setItem(KEY_HS, highScore);
+      updateHS();
+    }
     saveHist({ datetime: now(), score, status });
-    if (correct === NUM_Q) { clearCount++; ls.setItem(KEY_CLEAR, clearCount); updateClear(); }
+    if (correct === NUM_Q) {
+      clearCount++;
+      ls.setItem(KEY_CLEAR, clearCount);
+      updateClear();
+    }
   }
 
-  function retry()      { const btn = $('#check-answers'); btn.disabled = false; genProblems(); showProblems(); enableInputs(); $('#result').textContent = ''; startTime = Date.now(); $('#ans-0').focus(); }
-  function resetHS()    { if (confirm('ハイスコアをリセットしますか？')) { highScore = 0; ls.removeItem(KEY_HS); updateHS(); } }
+  function retry() {
+    $('#check-answers').disabled = false;
+    genProblems(); showProblems(); enableInputs();
+    $('#result').textContent = '';
+    startTime = Date.now();
+    $('#ans-0').focus();
+  }
+  function resetHS() {
+    if (confirm('ハイスコアをリセットしますか？')) {
+      highScore = 0;
+      ls.removeItem(KEY_HS);
+      updateHS();
+    }
+  }
 
   window.onload = () => {
     loadAll(); genProblems(); showProblems(); startTime = Date.now();
-    $('#check-answers').onclick = check;
-    $('#retry').onclick         = retry;
-    $('#reset-highscore').onclick = resetHS;
+    $('#check-answers').onclick     = check;
+    $('#retry').onclick             = retry;
+    $('#reset-highscore').onclick   = resetHS;
     $('#ans-0').focus();
   };
 </script>
