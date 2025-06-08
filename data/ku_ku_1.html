@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<title>二の段の九九</title>
+<title>一の段の九九</title>
 <style>
   body{font-family:sans-serif;background:#b3ecff;margin:20px;color:#333;font-size:2rem;line-height:1.5;}
   h1,h2{text-align:center;margin:10px 0}
@@ -31,7 +31,7 @@
 </head>
 <body>
   <h1>けいさんドリル</h1>
-  <h2>二のだん（ばらばら）</h2>
+  <h2>一のだん（ばらばら）</h2>
   <div id="problems-wrapper"></div>
   <div class="button-area">
     <button id="check-answers">採点</button>
@@ -54,12 +54,12 @@
   const APP_GRADE    = '2';
   const APP_CATEGORY = '九九';
   /* ===== 定数・ストレージキー ===== */
-  const APP_NS      = "multiplication2dan_v1_";
+  const APP_NS      = "multiplication1dan_v1_";
   const KEY_HS      = APP_NS + "highScore";
   const KEY_HISTORY = APP_NS + "history";
   const KEY_CLEAR   = APP_NS + "clearCount";
 
-  const NUM_Q      = 9;   // 2の段は9問
+  const NUM_Q      = 9;   // 一の段は9問
   const TIME_LIMIT = 30;  // スコア計算基準
 
   /* ===== 状態 ===== */
@@ -76,8 +76,8 @@
   const ls           = localStorage;
 
   function loadAll() {
-    highScore  = +ls.getItem(KEY_HS)      || 0;
-    clearCount = +ls.getItem(KEY_CLEAR)   || 0;
+    highScore  = +ls.getItem(KEY_HS)    || 0;
+    clearCount = +ls.getItem(KEY_CLEAR) || 0;
     updateHS(); updateClear();
     renderHistory(JSON.parse(ls.getItem(KEY_HISTORY) || '[]'));
   }
@@ -102,7 +102,7 @@
 
   function genProblems() {
     const nums = shuffle([1,2,3,4,5,6,7,8,9]);
-    problems = nums.map(n => ({ a: 2, b: n, ans: 2 * n }));
+    problems = nums.map(n => ({ a: 1, b: n, ans: 1 * n }));
   }
   function showProblems() {
     const wrap = $('#problems-wrapper'); wrap.innerHTML = '';
@@ -136,11 +136,9 @@
       icon.textContent = ''; icon.classList.remove('correct','wrong');
       if (u === p.ans) {
         correct++;
-        icon.textContent = '○';
-        icon.classList.add('correct');
+        icon.textContent = '○'; icon.classList.add('correct');
       } else {
-        icon.textContent = `× (こたえ:${p.ans})`;
-        icon.classList.add('wrong');
+        icon.textContent = `× (こたえ:${p.ans})`; icon.classList.add('wrong');
       }
     });
     disableInputs();
@@ -150,17 +148,9 @@
     $('#result').innerHTML =
       `スコア: <strong>${score}</strong>　ステータス: <strong>${status}</strong><br>` +
       `正解数: ${correct}/${NUM_Q}　時間: ${elap.toFixed(1)} 秒`;
-    if (score > highScore) {
-      highScore = score;
-      ls.setItem(KEY_HS, highScore);
-      updateHS();
-    }
+    if (score > highScore) { highScore = score; ls.setItem(KEY_HS, highScore); updateHS(); }
     saveHist({ datetime: now(), score, status });
-    if (correct === NUM_Q) {
-      clearCount++;
-      ls.setItem(KEY_CLEAR, clearCount);
-      updateClear();
-    }
+    if (correct === NUM_Q) { clearCount++; ls.setItem(KEY_CLEAR, clearCount); updateClear(); }
   }
 
   function retry() {
@@ -170,19 +160,13 @@
     startTime = Date.now();
     $('#ans-0').focus();
   }
-  function resetHS() {
-    if (confirm('ハイスコアをリセットしますか？')) {
-      highScore = 0;
-      ls.removeItem(KEY_HS);
-      updateHS();
-    }
-  }
+  function resetHS() { if (confirm('ハイスコアをリセットしますか？')) { highScore = 0; ls.removeItem(KEY_HS); updateHS(); } }
 
   window.onload = () => {
     loadAll(); genProblems(); showProblems(); startTime = Date.now();
-    $('#check-answers').onclick     = check;
-    $('#retry').onclick             = retry;
-    $('#reset-highscore').onclick   = resetHS;
+    $('#check-answers').onclick   = check;
+    $('#retry').onclick           = retry;
+    $('#reset-highscore').onclick = resetHS;
     $('#ans-0').focus();
   };
 </script>
