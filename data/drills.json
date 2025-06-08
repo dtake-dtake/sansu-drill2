@@ -80,7 +80,7 @@
     "ns": "multiplication9dan_v1_",
     "no": 9
   },
-    {
+  {
     "grade": "2",
     "category": "九九",
     "unit": 1,
@@ -88,5 +88,5 @@
     "file": "data/ku_ku.html",
     "ns": "multiplication_1to9_v6_",
     "no": 10
-  },
+  }
 ]
