@@ -70,8 +70,13 @@
   const $            = s => document.querySelector(s);
   const $$           = s => document.querySelectorAll(s);
   const now          = () => new Date().toLocaleString();
-  // 150以上でSS、120以上でS、…という6段階判定に変更
-  const statusOf     = s => s >= 150 ? "SS" : s >= 120 ? "S" : s >= 100 ? "A" : s >= 80 ? "B" : s >= 50 ? "C" : "D";
+  // 150以上でSS、120以上でS、101以上でA、90以上でB、80以上でC、それ以下はD
+  const statusOf     = s =>
+    s >= 150 ? "SS" :
+    s >= 120 ? "S"  :
+    s >= 101 ? "A"  :
+    s >= 90  ? "B"  :
+    s >= 80  ? "C"  : "D";
   const scrollCenter = e => e.scrollIntoView({ behavior: "smooth", block: "center" });
   const ls           = localStorage;
 
