@@ -88,5 +88,23 @@
     "file": "data/ku_ku.html",
     "ns": "multiplication_1to9_v6_",
     "no": 10
+  },
+  {
+    "grade": "2",
+    "category": "たしざん",
+    "unit": 2,
+    "name": "一けた＋一けた",
+    "file": "data/一けた＋一けた.html",
+    "ns": "addition_1to9_v1_",
+    "no": 1
+  },
+  {
+    "grade": "2",
+    "category": "二けた＋一けた",
+    "unit": 2,
+    "name": "二けた＋一けた",
+    "file": "data/二けた＋一けた.html",
+    "ns": "addition_2digit_plus_1digit_v1_",
+    "no": 2
   }
 ]
