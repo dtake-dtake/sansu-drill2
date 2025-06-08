@@ -3,15 +3,6 @@
     "grade": "2",
     "category": "九九",
     "unit": 1,
-    "name": "九九",
-    "file": "data/ku_ku.html",
-    "ns": "multiplication_1to9_v6_",
-    "no": 10
-  },
-  {
-    "grade": "2",
-    "category": "九九",
-    "unit": 1,
     "name": "一の段の九九（ばら）",
     "file": "data/ku_ku_1.html",
     "ns": "multiplication1dan_v1_",
@@ -88,5 +79,14 @@
     "file": "data/ku_ku_9.html",
     "ns": "multiplication9dan_v1_",
     "no": 9
-  }
+  },
+    {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "九九",
+    "file": "data/ku_ku.html",
+    "ns": "multiplication_1to9_v6_",
+    "no": 10
+  },
 ]
