@@ -106,5 +106,23 @@
     "file": "data/二けた＋一けた.html",
     "ns": "addition_2digit_plus_1digit_v1_",
     "no": 2
+  },
+  {
+    "grade": "1",
+    "category": "1けた－1けた",
+    "unit": 1,
+    "name": "1けた－1けた",
+    "file": "data/１けたー１けた.html",
+    "ns": "subtraction_1digit_minus_1digit_v1_",
+    "no": 1
+  },
+  {
+    "grade": "1",
+    "category": "(10～20)−1けた",
+    "unit": 1,
+    "name": "(10～20)−1けた",
+    "file": "data/（１０～２０）ー１けた.html",
+    "ns": "subtraction_10to20_minus_1digit_v1_",
+    "no": 2
   }
 ]
