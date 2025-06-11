@@ -124,5 +124,23 @@
     "file": "data/（１０～２０）ー１けた.html",
     "ns": "subtraction_10to20_minus_1digit_v1_",
     "no": 2
+  },
+  {
+    "grade": "1",
+    "category": "時計の読み方",
+    "unit": 2,
+    "name": "時計の読み方",
+    "file": "data/時計の読み方.html",
+    "ns": "clock_read_v2_",
+    "no": 1
+  },
+  {
+    "grade": "1",
+    "category": "時計の読み方",
+    "unit": 2,
+    "name": "時計の読み方（５分ごと）",
+    "file": "data/時計の読み方（５分ごと）.html",
+    "ns": "clock_read_5min_v1_",
+    "no": 2
   }
 ]
