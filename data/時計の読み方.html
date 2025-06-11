@@ -255,6 +255,21 @@ input[type=number]::placeholder {
     /* ======= ステータス表示 ======= */
     function updateStatus(){ if(!startTime) return; const e=((Date.now()-startTime)/1000).toFixed(1); statusEl.textContent=`${questionIndex+1}/${NUM_QUESTIONS}問目、${e}秒`; }
 
+  　 /* ======= ステータス判定 ======= */
+ function getStatus(score){
+   if(score >= 150) return 'SS';
+   if(score >= 120) return 'S';
+   if(score >= 101) return 'A';
+   if(score >=  90) return 'B';
+   if(score >=  80) return 'C';
+   return 'D';
+ }
+
+      // ステータスを計算
+   const status = getStatus(score);
+
+
+    
     /* ======= ヒストリー ======= */
     function renderHistory(hist){ historyListEl.innerHTML=''; hist.forEach(h=>{ const li=document.createElement('li'); li.textContent=`${h.datetime}：${h.score}`; historyListEl.appendChild(li); }); }
 
@@ -283,7 +298,12 @@ input[type=number]::placeholder {
       // 履歴
       const hist=load(KEY_HISTORY,[]); hist.unshift({ datetime: nowDT(), score }); if(hist.length>10) hist.pop(); save(KEY_HISTORY,hist); renderHistory(hist);
 
-      resultEl.innerHTML=`終了！<br>正解数: ${correctCount}/${NUM_QUESTIONS}<br>時間: ${elapsed.toFixed(1)}秒<br>スコア: ${score}`;
+   resultEl.innerHTML =
+     `終了！<br>` 
+     `正解数: ${correctCount}/${NUM_QUESTIONS}<br>` 
+     `時間: ${elapsed.toFixed(1)}秒<br>` 
+     `スコア: ${score}<br>` 
+     `ステータス: ${status}`;
       statusEl.textContent='';
       submitBtn.disabled=true; nextBtn.disabled=true; retryBtn.style.display='inline-block';
     }
