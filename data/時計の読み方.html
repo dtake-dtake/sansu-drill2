@@ -1,0 +1,309 @@
+<html lang="ja"><head>
+  <meta charset="UTF-8">
+  <title>時計の読み方</title>
+  <style>
+    /* ====== 共通スタイル（「二けた＋一けた」アプリと揃える） ====== */
+    body {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: sans-serif;
+      background: #b3ecff;   /* 同系の淡いブルー */
+      margin: 20px;
+      color: #333;
+      font-size: 2rem;       /* ベース 2rem */
+      line-height: 1.5;
+    }
+    h1, h2 { text-align: center; margin: 10px 0; }
+    h1 { font-size: 3rem; }  /* 二けた＋一けた と同じ */
+    h2 { font-size: 1.8rem; margin-bottom: 20px; }
+
+    /* ====== 個別スタイル ====== */
+    #status {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.2rem;
+    }
+    #clockCanvas {
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 50%;
+    }
+    .input-area { margin-top: 20px; display: flex; gap: 10px; }
+    .input-area input {
+      width: 90px;
+      font-size: 2rem;
+      padding: 5px;
+      text-align: center;
+      -moz-appearance: textfield;
+      appearance: none;
+    }
+    .button-area { margin-top: 10px; display: flex; gap: 20px; }
+    .button-area button,
+    #reset-highscore,
+    #retryBtn {
+      font-size: 1.8rem;
+      padding: 8px 20px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      min-height: 2.2em;
+    }
+    #summary-area { text-align: center; margin-top: 0px; margin-bottom: 0;}
+    #highScoreArea, #clearCountArea { font-size: 1.8rem; margin: 10px 0; }
+    #history-area { font-size: 1.6rem; margin: 10px 0; }
+    #history-list { list-style: none; padding: 0; margin: 0; }
+    #history-list li { margin: 4px 0; }
+    .correct { color: red; }
+    .wrong   { color: blue; }
+
+    /* ① WebKit（Chrome/Safari）系のスピンボタンを消す */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ② Firefox でのスピンボタンを消す */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* ② 時／分ラベル付きフィールド */
+.time-field {
+  display: flex;
+  align-items: center;
+  gap: 4px;           /* □ と時・分の間隔 */
+}
+.time-field input {
+  /* プレースホルダー「□」だけ残す */
+  placeholder-shown {
+    color: #999;
+  }
+}
+.time-field label {
+  font-size: 2rem;    /* □ と同じ大きさ */
+  color: #333;
+}
+
+/* プレースホルダー文字「□」を可視化 */
+input[type=number]::placeholder {
+  color: #999;
+}
+
+/* スピンボタンを完全に消す */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+/* ── スピンボタンを消す ── */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* ── 時／分ラベル付きフィールド ── */
+.time-field {
+  display: flex;
+  align-items: center;
+  gap: 4px;   /* □ とラベルの隙間 */
+}
+.time-field input {
+  width: 80px;      /* お好みで調整 */
+  font-size: 2rem;  /* 既存に合わせて */
+  padding: 5px;
+  text-align: center;
+}
+.time-field label {
+  font-size: 2rem;  /* □ と同じ大きさ */
+  color: #333;
+}
+
+/* ── プレースホルダー「□」の色 ── */
+input[type=number]::placeholder {
+  color: #999;
+}
+
+  </style>
+</head>
+<body>
+  <div id="status">3/5問目、964.0秒</div>
+  <h1>算数ドリル</h1>
+  <h2>時計の読み方</h2>
+
+  <canvas id="clockCanvas" width="300" height="300"></canvas>
+
+  <div class="input-area">
+    <div class="time-field">
+      <input
+        type="number"
+        id="hourInput"
+        min="1"
+        max="12"
+        >時
+    </div>
+    <div class="time-field">
+      <input
+        type="number"
+        id="minuteInput"
+        min="0"
+        max="59"
+        >分
+    </div>
+  </div>
+  <div class="button-area">
+    <button id="submitBtn">決定</button>
+    <button id="nextBtn" disabled="">次の問題</button>
+  </div>
+
+  <div id="result"></div>
+
+  <div id="summary-area">
+    <div id="highScoreArea">ハイスコア：<span id="highScoreValue">30</span> <button id="reset-highscore">リセット</button></div>
+    <div id="clearCountArea">クリア回数：<span id="clearCountValue">0</span></div>
+    <div id="history-area">履歴（最新10件）<br><ul id="history-list"><li>2025/6/11 0:57:54：0</li><li>2025/6/11 0:41:06：30</li></ul></div>
+    <button id="retryBtn" style="display: none;">もういちど</button>
+  </div>
+
+  <script>
+    /* ======= アプリ固有キー ======= */
+    const APP_NS      = 'clock_read_v2_';
+    const KEY_HS      = APP_NS + 'highScore';
+    const KEY_CLEAR   = APP_NS + 'clearCount';
+    const KEY_HISTORY = APP_NS + 'history';
+
+    /* ======= 設定 ======= */
+    const NUM_QUESTIONS = 5;   // ← 全5問
+    const TIME_REFERENCE = 50; // 秒（スコア計算用）
+
+    /* ======= 状態 ======= */
+    let questionIndex = 0,
+        correctCount  = 0,
+        startTime     = null,
+        timerInterval = null,
+        currentHour, currentMinute,
+        highScore = 0,
+        clearCount = 0;
+
+    /* ======= 要素 ======= */
+    const canvas        = document.getElementById('clockCanvas');
+    const ctx           = canvas.getContext('2d');
+    const radius        = canvas.width / 2; ctx.translate(radius, radius);
+
+    const statusEl      = document.getElementById('status');
+    const hourInput     = document.getElementById('hourInput');
+    const minuteInput   = document.getElementById('minuteInput');
+    const submitBtn     = document.getElementById('submitBtn');
+    const nextBtn       = document.getElementById('nextBtn');
+    const resultEl      = document.getElementById('result');
+    const highScoreEl   = document.getElementById('highScoreValue');
+    const clearCountEl  = document.getElementById('clearCountValue');
+    const historyListEl = document.getElementById('history-list');
+    const resetHSBtn    = document.getElementById('reset-highscore');
+    const retryBtn      = document.getElementById('retryBtn');
+
+    /* ======= ユーティリティ ======= */
+    const pad = n => n.toString().padStart(2,'0');
+    const rnd = (min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+    const nowDT = ()=>new Date().toLocaleString();
+    const ls = localStorage;
+    const load = (k,d)=>{const v=ls.getItem(k);return v?JSON.parse(v):d;};
+    const save = (k,v)=>ls.setItem(k,JSON.stringify(v));
+
+    /* ======= パーシステンス ======= */
+    function loadPersisted(){
+      highScore  = load(KEY_HS,0); highScoreEl.textContent = highScore;
+      clearCount = load(KEY_CLEAR,0); clearCountEl.textContent = clearCount;
+      renderHistory(load(KEY_HISTORY,[]));
+    }
+
+    /* ======= 時計描画 ======= */
+    function drawFace(){
+      ctx.beginPath(); ctx.arc(0,0,radius-4,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle='#333'; ctx.stroke();
+      for(let t=0;t<60;t++){
+        const a=t*Math.PI/30, inner=radius-10, outer=radius-4;
+        ctx.beginPath(); ctx.lineWidth=t%5?1:2; ctx.strokeStyle='#000';
+        ctx.moveTo(inner*Math.cos(a), inner*Math.sin(a));
+        ctx.lineTo(outer*Math.cos(a), outer*Math.sin(a));
+        ctx.stroke();
+      }
+      for(let n=1;n<=12;n++){
+        const a=n*Math.PI/6; ctx.rotate(a); ctx.translate(0,-radius*0.85); ctx.rotate(-a);
+        ctx.font=`${radius*0.12}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#000'; ctx.fillText(n.toString(),0,0);
+        ctx.rotate(a); ctx.translate(0,radius*0.85); ctx.rotate(-a);
+      }
+    }
+    function drawHand(ang,len,w){ ctx.beginPath(); ctx.lineWidth=w; ctx.lineCap='round'; ctx.moveTo(0,0); ctx.rotate(ang); ctx.lineTo(0,-len); ctx.stroke(); ctx.rotate(-ang); }
+    function drawClock(h,m){ ctx.clearRect(-radius,-radius,canvas.width,canvas.height); drawFace(); drawHand((h%12+m/60)*Math.PI/6, radius*0.5,6); drawHand(m*Math.PI/30,radius*0.75,4); ctx.beginPath(); ctx.arc(0,0,5,0,Math.PI*2); ctx.fill(); }
+
+    /* ======= ステータス表示 ======= */
+    function updateStatus(){ if(!startTime) return; const e=((Date.now()-startTime)/1000).toFixed(1); statusEl.textContent=`${questionIndex+1}/${NUM_QUESTIONS}問目、${e}秒`; }
+
+    /* ======= ヒストリー ======= */
+    function renderHistory(hist){ historyListEl.innerHTML=''; hist.forEach(h=>{ const li=document.createElement('li'); li.textContent=`${h.datetime}：${h.score}`; historyListEl.appendChild(li); }); }
+
+    /* ======= 問題ロジック ======= */
+    function loadQuestion(){
+      if(questionIndex===0){ startTime=Date.now(); timerInterval=setInterval(updateStatus,100); }
+      updateStatus();
+      currentHour   = rnd(1,12);
+      currentMinute = rnd(0,59);
+      drawClock(currentHour,currentMinute);
+      resultEl.textContent='';
+      hourInput.value=''; minuteInput.value='';
+      submitBtn.disabled=false; nextBtn.disabled=true; retryBtn.style.display='none';
+      hourInput.focus();
+    }
+
+    function finishQuiz(){
+      clearInterval(timerInterval);
+      const elapsed=(Date.now()-startTime)/1000;
+      const factor = Math.max(2 - elapsed/30, 1);
+      const score = Math.floor(correctCount * 20 * factor);
+      // ハイスコア更新
+      if(score > highScore){ highScore=score; save(KEY_HS,highScore); highScoreEl.textContent=highScore; }
+      // クリア回数
+      if(correctCount === NUM_QUESTIONS){ clearCount++; save(KEY_CLEAR,clearCount); clearCountEl.textContent=clearCount; }
+      // 履歴
+      const hist=load(KEY_HISTORY,[]); hist.unshift({ datetime: nowDT(), score }); if(hist.length>10) hist.pop(); save(KEY_HISTORY,hist); renderHistory(hist);
+
+      resultEl.innerHTML=`終了！<br>正解数: ${correctCount}/${NUM_QUESTIONS}<br>時間: ${elapsed.toFixed(1)}秒<br>スコア: ${score}`;
+      statusEl.textContent='';
+      submitBtn.disabled=true; nextBtn.disabled=true; retryBtn.style.display='inline-block';
+    }
+
+    /* ======= イベント ======= */
+    submitBtn.addEventListener('click',()=>{
+      const h=parseInt(hourInput.value,10), m=parseInt(minuteInput.value,10);
+      if(h===currentHour && m===currentMinute){ correctCount++; resultEl.innerHTML='<span class="correct">〇 正解！</span>'; }
+      else { resultEl.innerHTML=`<span class="wrong">× 答え：${currentHour}時${pad(currentMinute)}分</span>`; }
+      submitBtn.disabled=true; nextBtn.disabled=false; nextBtn.focus();
+    });
+    nextBtn.addEventListener('click',()=>{ questionIndex++; (questionIndex < NUM_QUESTIONS) ? loadQuestion() : finishQuiz(); });
+    hourInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); minuteInput.focus(); }});
+    minuteInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); submitBtn.click(); }});
+    resetHSBtn.addEventListener('click',()=>{ if(confirm('ハイスコアをリセットしますか？')){ highScore=0; save(KEY_HS,0); highScoreEl.textContent=0; } });
+    retryBtn.addEventListener('click',()=>{ questionIndex=0; correctCount=0; clearInterval(timerInterval); loadQuestion(); });
+
+    /* ======= 初期化 ======= */
+    window.onload = ()=>{ loadPersisted(); loadQuestion(); };
+  </script>
+
+
+</body></html>
