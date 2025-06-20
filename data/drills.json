@@ -140,7 +140,7 @@
     "unit": 2,
     "name": "時計の読み方（５分ごと）",
     "file": "data/時計の読み方（５分ごと）.html",
-    "ns": "clock_read_5min_v1_",
+    "ns": "clock_read_5min",
     "no": 2
   }
 ]
