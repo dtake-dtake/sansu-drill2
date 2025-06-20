@@ -131,7 +131,7 @@
     "unit": 2,
     "name": "時計の読み方",
     "file": "data/時計の読み方.html",
-    "ns": "clock_read_v2_",
+    "ns": "clock_read_v3_",
     "no": 1
   },
   {
