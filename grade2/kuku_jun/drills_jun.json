@@ -1,0 +1,74 @@
+[
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 1,
+    "name": "一の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/一の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-1-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 2,
+    "name": "二の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/二の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-2-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 3,
+    "name": "三の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/三の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-3-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 4,
+    "name": "四の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/四の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-4-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 5,
+    "name": "五の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/五の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-5-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 6,
+    "name": "六の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/六の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-6-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 7,
+    "name": "七の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/七の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-7-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 8,
+    "name": "八の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/八の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-8-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（じゅん）",
+    "no": 9,
+    "name": "九の段の九九（じゅん）",
+    "file": "grade2/kuku_jun/九の段の九九（じゅん）.html",
+    "ns": "g2-kuku-jun-9-"
+  }
+]
