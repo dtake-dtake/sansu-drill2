@@ -14,7 +14,7 @@
     "unit": "",
     "no": 10,
     "name": "九九",
-    "file": "grade2/kuku_random/九九.html",   // ファイルを置いた実際のパスに合わせて
+    "file": "grade2/kuku_random/九九.html", 
     "ns": "multiplication_random10_v1_"
   }
 ]
