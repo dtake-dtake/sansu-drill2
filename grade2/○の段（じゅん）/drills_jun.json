@@ -4,7 +4,7 @@
     "category": "九九",
     "unit": 1,
     "name": "一の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/一の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/一の段の九九（じゅん）.html",
     "ns": "multiplication1dan_jun_v1_",
     "no": 1
   },
@@ -13,7 +13,7 @@
     "category": "九九",
     "unit": 1,
     "name": "二の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/二の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/二の段の九九（じゅん）.html",
     "ns": "multiplication2dan_jun_v1_",
     "no": 2
   },
@@ -22,7 +22,7 @@
     "category": "九九",
     "unit": 1,
     "name": "三の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/三の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/三の段の九九（じゅん）.html",
     "ns": "multiplication3dan_jun_v1_",
     "no": 3
   },
@@ -31,7 +31,7 @@
     "category": "九九",
     "unit": 1,
     "name": "四の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/四の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/四の段の九九（じゅん）.html",
     "ns": "multiplication4dan_jun_v1_",
     "no": 4
   },
@@ -40,7 +40,7 @@
     "category": "九九",
     "unit": 1,
     "name": "五の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/五の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/五の段の九九（じゅん）.html",
     "ns": "multiplication5dan_jun_v1_",
     "no": 5
   },
@@ -49,7 +49,7 @@
     "category": "九九",
     "unit": 1,
     "name": "六の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/六の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/六の段の九九（じゅん）.html",
     "ns": "multiplication6dan_jun_v1_",
     "no": 6
   },
@@ -58,7 +58,7 @@
     "category": "九九",
     "unit": 1,
     "name": "七の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/七の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/七の段の九九（じゅん）.html",
     "ns": "multiplication7dan_jun_v1_",
     "no": 7
   },
@@ -67,7 +67,7 @@
     "category": "九九",
     "unit": 1,
     "name": "八の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/八の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/八の段の九九（じゅん）.html",
     "ns": "multiplication8dan_jun_v1_",
     "no": 8
   },
@@ -76,7 +76,7 @@
     "category": "九九",
     "unit": 1,
     "name": "九の段の九九（じゅん）",
-    "file": "grade2/〇の段（じゅん）/九の段の九九（じゅん）.html",
+    "file": "grade2/○の段（じゅん）/九の段の九九（じゅん）.html",
     "ns": "multiplication9dan_jun_v1_",
     "no": 9
   }
