@@ -1,0 +1,83 @@
+[
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "一の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/一の段の九九（ばら）.html",
+    "ns": "multiplication1bara_v1_",
+    "no": 1
+  },
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "二の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/二の段の九九（ばら）.html",
+    "ns": "multiplication2bara_v1_",
+    "no": 2
+  },
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "三の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/三の段の九九（ばら）.html",
+    "ns": "multiplication3bara_v1_",
+    "no": 3
+  },
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "四の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/四の段の九九（ばら）.html",
+    "ns": "multiplication4bara_v1_",
+    "no": 4
+  },
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "五の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/五の段の九九（ばら）.html",
+    "ns": "multiplication5bara_v1_",
+    "no": 5
+  },
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "六の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/六の段の九九（ばら）.html",
+    "ns": "multiplication6bara_v1_",
+    "no": 6
+  },
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "七の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/七の段の九九（ばら）.html",
+    "ns": "multiplication7bara_v1_",
+    "no": 7
+  },
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "八の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/八の段の九九（ばら）.html",
+    "ns": "multiplication8bara_v1_",
+    "no": 8
+  },
+  {
+    "grade": "2",
+    "category": "九九",
+    "unit": 1,
+    "name": "九の段の九九（ばら）",
+    "file": "grade2/〇の段（ばら）/九の段の九九（ばら）.html",
+    "ns": "multiplication9bara_v1_",
+    "no": 9
+  }
+]
