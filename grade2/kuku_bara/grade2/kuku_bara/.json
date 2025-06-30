@@ -1,0 +1,74 @@
+[
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 1,
+    "name": "一の段の九九（ばら）",
+    "file": "grade2/kuku_bara/一の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-1-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 2,
+    "name": "二の段の九九（ばら）",
+    "file": "grade2/kuku_bara/二の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-2-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 3,
+    "name": "三の段の九九（ばら）",
+    "file": "grade2/kuku_bara/三の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-3-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 4,
+    "name": "四の段の九九（ばら）",
+    "file": "grade2/kuku_bara/四の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-4-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 5,
+    "name": "五の段の九九（ばら）",
+    "file": "grade2/kuku_bara/五の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-5-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 6,
+    "name": "六の段の九九（ばら）",
+    "file": "grade2/kuku_bara/六の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-6-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 7,
+    "name": "七の段の九九（ばら）",
+    "file": "grade2/kuku_bara/七の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-7-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 8,
+    "name": "八の段の九九（ばら）",
+    "file": "grade2/kuku_bara/八の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-8-"
+  },
+  {
+    "grade": "2",
+    "category": "九九（ばら）",
+    "no": 9,
+    "name": "九の段の九九（ばら）",
+    "file": "grade2/kuku_bara/九の段の九九（ばら）.html",
+    "ns": "g2-kuku-bara-9-"
+  }
+]
