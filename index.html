@@ -4,69 +4,44 @@
   <meta charset="UTF-8" />
   <title>算数ドリルアプリ 目次</title>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-      background: #e0f7fa;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    #controls {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 12px;
-    }
-    #controls select,
-    #controls input {
-      margin: 0 4px;
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    #search {
-      width: 240px;
-    }
-    table {
-      width: 100%;
-      background: #fff;
-      border-collapse: collapse;
-      margin-top: 8px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    th {
-      background: #f5f5f5;
-      cursor: pointer;
-      position: relative;
-    }
-    th.sorted-asc { background: #b2ebf2; }
-    th.sorted-desc { background: #ffe0b2; }
-    th.no-sort { cursor: default; }
-    tr:hover {
-      background: #fafafa;
-    }
-    a {
-      color: blue;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
+    body{font-family:sans-serif;margin:20px;background:#e0f7fa;}
+    h1{text-align:center;margin-bottom:8px;}
+
+    /* ───── フィルター UI ───── */
+    #controls{display:flex;justify-content:center;margin-bottom:12px;}
+    #controls select,#controls input{margin:0 4px;padding:6px;border:1px solid #ccc;border-radius:4px;}
+    #search{width:240px;}
+
+    /* ───── テーブル ───── */
+    table{width:100%;background:#fff;border-collapse:collapse;margin-top:8px;}
+    th,td{border:1px solid #ccc;padding:8px;text-align:center;white-space:nowrap;}
+    th{background:#f5f5f5;cursor:pointer;position:relative;}
+    th.sorted-asc{background:#b2ebf2;}
+    th.sorted-desc{background:#ffe0b2;}
+    th.no-sort{cursor:default;}
+    tr:hover{background:#fafafa;}
+    a{color:blue;text-decoration:none;}
+    a:hover{text-decoration:underline;}
+
+    /* ───── ステータス（星） ───── */
+    .status-stars{font-size:1.2rem;}
+    .status-SS{background:linear-gradient(to right,red,orange,yellow,green,blue,indigo,violet);
+               -webkit-background-clip:text;color:transparent;}
+    .status-S {color:gold;}
+    .status-A {color:silver;}
+    .status-B {color:#cd7f32;}          /* ブロンズ */
+    .status-C,.status-D{color:gray;}
   </style>
 </head>
 <body>
   <h1>算数ドリルアプリ</h1>
+
   <div id="controls">
     <select id="gradeFilter"></select>
     <select id="unitFilter"></select>
-    <input type="text" id="search" placeholder="ドリル名で絞り込み" />
+    <input type="text" id="search" placeholder="ドリル名で絞り込み">
   </div>
+
   <table id="tocTable">
     <thead>
       <tr>
@@ -77,6 +52,7 @@
         <th data-key="status">ステータス</th>
         <th data-key="dt">最終チャレンジ</th>
         <th data-key="hs">ハイスコア</th>
+        <th data-key="clearsM">今月</th>
         <th data-key="clears">クリア回数</th>
       </tr>
     </thead>
@@ -84,123 +60,158 @@
   </table>
 
   <script>
-    // JSON 読み込み
-    async function loadDrills() {
+    /* ===== JSON 読み込み ===== */
+    async function loadDrills(){
       const resp = await fetch('data/drills.json');
-      if (!resp.ok) throw new Error('drills.json の読み込みに失敗: ' + resp.status);
+      if(!resp.ok) throw new Error('drills.json の読み込みに失敗: '+resp.status);
       return await resp.json();
     }
 
-    const statusOrder = { SS: 6, S: 5, A: 4, B: 3, C: 2, D: 1, '―': 0 };
-    let buildList = [], sort = { key: 'name', dir: null };
+    /* ===== ステータス変換テーブル ===== */
+    const statusOrder     = {SS:6,S:5,A:4,B:3,C:2,D:1,'―':0};
+    const statusStarsMap  = {
+      SS:{stars:'★★★★★',cls:'status-SS'},
+      S :{stars:'★★★★', cls:'status-S' },
+      A :{stars:'★★★',  cls:'status-A' },
+      B :{stars:'★★',   cls:'status-B' },
+      C :{stars:'★',    cls:'status-C' },
+      D :{stars:'',     cls:'status-D' },
+      '―':{stars:'',    cls:''}
+    };
 
-    // データ組み立て
-    function buildListFromDrills(drills) {
-      return drills.map(d => {
-        const hs = localStorage.getItem(d.ns + 'highScore') || '―';
-        const clears = localStorage.getItem(d.ns + 'clearCount') || '0';
-        let status = '―', dt = '―';
-        try {
-          const hist = JSON.parse(localStorage.getItem(d.ns + 'history') || '[]');
-          if (hist.length) { status = hist[0].status || status; dt = hist[0].datetime || dt; }
-        } catch {}
-        return {
-          grade: d.grade,
-          unit: d.unit ?? '',
-          no: d.no ?? '',
-          name: d.name,
-          file: d.file,
-          status,
-          dt,
-          hs,
-          clears
-        };
+    const now       = new Date();
+    const curYear   = now.getFullYear();
+    const curMonth  = now.getMonth(); // 0‑index
+
+    let buildList = [];
+    let sort = {key:'name',dir:null};
+
+    /* ===== データ組み立て ===== */
+    function buildListFromDrills(drills){
+      return drills.map(d=>{
+        const hs       = localStorage.getItem(d.ns+'highScore')  || '―';
+        const clears   = localStorage.getItem(d.ns+'clearCount') || '0';
+        let status='―', dt='―', clearsM=0;
+        try{
+          const hist = JSON.parse(localStorage.getItem(d.ns+'history')||'[]');
+          if(hist.length){
+            status = hist[0].status || status;
+            dt     = hist[0].datetime || dt;
+          }
+          clearsM = hist.filter(h=>{
+            if(!h.datetime) return false;
+            const t=new Date(h.datetime);
+            return t.getFullYear()===curYear && t.getMonth()===curMonth;
+          }).length;
+        }catch{}
+        return {grade:d.grade,unit:d.unit??'',no:d.no??'',name:d.name,file:d.file,
+                status,dt,hs,clearsM,clears};
       });
-      }
-
-    function initFilters(drills) {
-      const gradeSel = document.getElementById('gradeFilter');
-      const unitSel = document.getElementById('unitFilter');
-      const grades = [...new Set(drills.map(d => d.grade))].sort((a,b) => a.localeCompare(b,'ja', {numeric:true}));
-      const units = [...new Set(drills.map(d => String(d.unit ?? '')))].filter(v => v !== '').sort((a,b) => (+a) - (+b));
-      gradeSel.innerHTML = '<option value="">学年</option>' + grades.map(g => `<option value="${g}">${g}</option>`).join('');
-      unitSel.innerHTML = '<option value="">単元</option>' + units.map(u => `<option value="${u}">${u}</option>`).join('');
     }
 
-    // ソート・フィルター
-    function filterAndSort(data) {
-      const query = document.getElementById('search').value.trim().toLowerCase();
+    /* ===== フィルターリスト初期化 ===== */
+    function initFilters(drills){
+      const gradeSel=document.getElementById('gradeFilter');
+      const unitSel =document.getElementById('unitFilter');
+      const grades=[...new Set(drills.map(d=>d.grade))]
+                     .sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
+      const units=[...new Set(drills.map(d=>String(d.unit??'')))]
+                     .filter(v=>v!=='')
+                     .sort((a,b)=>(+a)-(+b));
+      gradeSel.innerHTML = '<option value="">学年</option>' +
+                           grades.map(g=>`<option value="${g}">${g}</option>`).join('');
+      unitSel.innerHTML  = '<option value="">単元</option>' +
+                           units.map(u=>`<option value="${u}">${u}</option>`).join('');
+    }
+
+    /* ===== フィルター＆ソート ===== */
+    function filterAndSort(data){
+      const query    = document.getElementById('search').value.trim().toLowerCase();
       const gradeVal = document.getElementById('gradeFilter').value;
-      const unitVal = document.getElementById('unitFilter').value;
-      let filtered = data.filter(item =>
-        (gradeVal === '' || item.grade === gradeVal) &&
-        (unitVal === '' || String(item.unit) === unitVal) &&
-        item.name.toLowerCase().includes(query)
+      const unitVal  = document.getElementById('unitFilter').value;
+
+      let filtered = data.filter(it=>
+        (gradeVal===''||it.grade===gradeVal) &&
+        (unitVal==='' ||String(it.unit)===unitVal) &&
+        it.name.toLowerCase().includes(query)
       );
-      if (!sort.dir) return filtered;
-      return filtered.sort((a, b) => {
-        let cmp = 0;
-          switch (sort.key) {
-            case 'unit': cmp = (+a.unit || 0) - (+b.unit || 0); break;
-            case 'no': cmp = (+a.no || 0) - (+b.no || 0); break;
-          case 'hs': case 'clears': cmp = (+a[sort.key] || 0) - (+b[sort.key] || 0); break;
-          case 'status': cmp = statusOrder[a.status] - statusOrder[b.status]; break;
-          case 'dt': cmp = ((a.dt==='―'?0:new Date(a.dt).getTime()) - (b.dt==='―'?0:new Date(b.dt).getTime())); break;
-          default: cmp = a[sort.key].localeCompare(b[sort.key], 'ja');
+
+      if(!sort.dir) return filtered;
+
+      return filtered.sort((a,b)=>{
+        let cmp=0;
+        switch(sort.key){
+          case 'unit'   : cmp=(+a.unit||0)-(+b.unit||0);break;
+          case 'no'     : cmp=(+a.no||0 )-(+b.no||0 );break;
+          case 'hs':
+          case 'clears':
+          case 'clearsM': cmp=(+a[sort.key]||0)-(+b[sort.key]||0);break;
+          case 'status' : cmp=statusOrder[a.status]-statusOrder[b.status];break;
+          case 'dt'     : cmp=((a.dt==='―'?0:new Date(a.dt)) -
+                              (b.dt==='―'?0:new Date(b.dt)));break;
+          default       : cmp=a[sort.key].localeCompare(b[sort.key],'ja');
         }
-        return sort.dir === 'asc' ? cmp : -cmp;
+        return sort.dir==='asc'?cmp:-cmp;
       });
     }
 
-    // 描画
-    function renderTable() {
-      const tbody = document.querySelector('#tocTable tbody');
-      tbody.innerHTML = '';
-      // ヘッダ表示更新
-      document.querySelectorAll('th[data-key]').forEach(th => th.classList.remove('sorted-asc','sorted-desc'));
-      if (sort.dir) {
-        const th = document.querySelector(`th[data-key="${sort.key}"]`);
+    /* ===== テーブル描画 ===== */
+    function renderTable(){
+      const tbody=document.querySelector('#tocTable tbody');
+      tbody.innerHTML='';
+
+      /* ヘッダマーク更新 */
+      document.querySelectorAll('th[data-key]')
+              .forEach(th=>th.classList.remove('sorted-asc','sorted-desc'));
+      if(sort.dir){
+        const th=document.querySelector(`th[data-key="${sort.key}"]`);
         th.classList.add(sort.dir==='asc'?'sorted-asc':'sorted-desc');
       }
-      // フィルター＆ソート
-      const rows = filterAndSort(buildList);
-      rows.forEach(item => {
-        const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${item.grade}</td>
-            <td>${item.unit}</td>
-            <td>${item.no}</td>
-          <td><a href="${item.file}" target="_blank">${item.name}</a></td>
-          <td>${item.status}</td>
-          <td>${item.dt}</td>
-          <td>${item.hs}</td>
-          <td>${item.clears}</td>
+
+      const rows=filterAndSort(buildList);
+      rows.forEach(it=>{
+        const info=statusStarsMap[it.status] ?? {stars:it.status,cls:''};
+
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+          <td>${it.grade}</td>
+          <td>${it.unit}</td>
+          <td>${it.no}</td>
+          <td><a href="${it.file}" target="_blank">${it.name}</a></td>
+          <td><span class="status-stars ${info.cls}">${info.stars}</span></td>
+          <td>${it.dt}</td>
+          <td>${it.hs}</td>
+          <td>${it.clearsM}</td>
+          <td>${it.clears}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // ソートハンドラ
-    function attachSortHandlers() {
-      document.querySelectorAll('th[data-key]').forEach(th => {
-        th.addEventListener('click', () => {
-          const key = th.getAttribute('data-key');
-          if (sort.key===key && sort.dir) sort.dir = sort.dir==='asc'?'desc':'asc';
-          else { sort.key = key; sort.dir = 'desc'; }
+    /* ===== ソートハンドラ ===== */
+    function attachSortHandlers(){
+      document.querySelectorAll('th[data-key]').forEach(th=>{
+        th.addEventListener('click',()=>{
+          const key=th.getAttribute('data-key');
+          if(sort.key===key && sort.dir) sort.dir = sort.dir==='asc' ? 'desc':'asc';
+          else { sort.key=key; sort.dir='desc'; }
           renderTable();
         });
       });
     }
 
-    // 初期化
-    window.onload = async () => {
+    /* ===== 初期化 ===== */
+    window.onload = async ()=>{
       const drills = await loadDrills();
-      buildList = buildListFromDrills(drills);
+      buildList    = buildListFromDrills(drills);
       initFilters(drills);
       attachSortHandlers();
-      document.getElementById('search').addEventListener('input', renderTable);
-      document.getElementById('gradeFilter').addEventListener('change', renderTable);
-      document.getElementById('unitFilter').addEventListener('change', renderTable);
+
+      /* イベント */
+      document.getElementById('search').addEventListener('input',renderTable);
+      document.getElementById('gradeFilter').addEventListener('change',renderTable);
+      document.getElementById('unitFilter').addEventListener('change',renderTable);
+
       renderTable();
     };
   </script>
