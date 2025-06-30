@@ -29,7 +29,7 @@
                -webkit-background-clip:text;color:transparent;}
     .status-S {color:gold;}
     .status-A {color:silver;}
-    .status-B {color:#cd7f32;}          /* ブロンズ */
+    .status-B {color:#cd7f32;}
     .status-C,.status-D{color:gray;}
   </style>
 </head>
@@ -60,16 +60,15 @@
   </table>
 
   <script>
-    /* ===== JSON 読み込み ===== */
-    async function loadDrills(){
-      const resp = await fetch('data/drills.json');
-      if(!resp.ok) throw new Error('drills.json の読み込みに失敗: '+resp.status);
-      return await resp.json();
-    }
+    /* ===== ここだけ変えれば読み込む JSON を増やせる ===== */
+    const JSON_FILES = [
+      'data/drills.json',      // 既存ファイル
+      'data/drills_extra.json' // 追加したいファイル（例）
+    ];
 
     /* ===== ステータス変換テーブル ===== */
-    const statusOrder     = {SS:6,S:5,A:4,B:3,C:2,D:1,'―':0};
-    const statusStarsMap  = {
+    const statusOrder    = {SS:6,S:5,A:4,B:3,C:2,D:1,'―':0};
+    const statusStarsMap = {
       SS:{stars:'★★★★★',cls:'status-SS'},
       S :{stars:'★★★★', cls:'status-S' },
       A :{stars:'★★★',  cls:'status-A' },
@@ -79,33 +78,38 @@
       '―':{stars:'',    cls:''}
     };
 
-    const now       = new Date();
-    const curYear   = now.getFullYear();
-    const curMonth  = now.getMonth(); // 0‑index
+    /* ===== データロード ===== */
+    async function loadDrills(){
+      // 複数 JSON を並列ロード → 1 つの配列へ fl at
+      const lists = await Promise.all(
+        JSON_FILES.map(async f => {
+          try{
+            const r = await fetch(f);
+            if(!r.ok) throw new Error(r.status);
+            return await r.json();
+          }catch(e){ console.warn('Failed to load',f,e); return []; }
+        })
+      );
+      return lists.flat();
+    }
 
-    let buildList = [];
-    let sort = {key:'name',dir:null};
+    /* ===== 月次キー ===== */
+    const monthKeyOf = ns => ns + 'monthlyClear-' + new Date().toISOString().slice(0,7);
 
     /* ===== データ組み立て ===== */
     function buildListFromDrills(drills){
       return drills.map(d=>{
-        const hs       = localStorage.getItem(d.ns+'highScore')  || '―';
-        const clears   = localStorage.getItem(d.ns+'clearCount') || '0';
-        let status='―', dt='―', clearsM=0;
+        const ls      = localStorage;
+        const hs       = ls.getItem(d.ns+'highScore')  || '―';
+        const clears   = ls.getItem(d.ns+'clearCount') || '0';
+        const clearsM  = ls.getItem(monthKeyOf(d.ns))  || '0';
+        let status='―', dt='―';
         try{
-          const hist = JSON.parse(localStorage.getItem(d.ns+'history')||'[]');
-          if(hist.length){
-            status = hist[0].status || status;
-            dt     = hist[0].datetime || dt;
-          }
-          clearsM = hist.filter(h=>{
-            if(!h.datetime) return false;
-            const t=new Date(h.datetime);
-            return t.getFullYear()===curYear && t.getMonth()===curMonth;
-          }).length;
+          const hist = JSON.parse(ls.getItem(d.ns+'history')||'[]');
+          if(hist.length){ status = hist[0].status || status; dt = hist[0].datetime || dt; }
         }catch{}
         return {grade:d.grade,unit:d.unit??'',no:d.no??'',name:d.name,file:d.file,
-                status,dt,hs,clearsM,clears};
+                status,dt,hs,clears,clearsM};
       });
     }
 
@@ -125,20 +129,18 @@
     }
 
     /* ===== フィルター＆ソート ===== */
+    let sort = {key:'grade',dir:null};
     function filterAndSort(data){
-      const query    = document.getElementById('search').value.trim().toLowerCase();
-      const gradeVal = document.getElementById('gradeFilter').value;
-      const unitVal  = document.getElementById('unitFilter').value;
-
-      let filtered = data.filter(it=>
-        (gradeVal===''||it.grade===gradeVal) &&
-        (unitVal==='' ||String(it.unit)===unitVal) &&
-        it.name.toLowerCase().includes(query)
+      const q  = document.getElementById('search').value.trim().toLowerCase();
+      const gF = document.getElementById('gradeFilter').value;
+      const uF = document.getElementById('unitFilter').value;
+      let arr = data.filter(it=>
+        (gF===''||it.grade===gF)&&
+        (uF===''||String(it.unit)===uF)&&
+        it.name.toLowerCase().includes(q)
       );
-
-      if(!sort.dir) return filtered;
-
-      return filtered.sort((a,b)=>{
+      if(!sort.dir) return arr;
+      return arr.sort((a,b)=>{
         let cmp=0;
         switch(sort.key){
           case 'unit'   : cmp=(+a.unit||0)-(+b.unit||0);break;
@@ -147,8 +149,7 @@
           case 'clears':
           case 'clearsM': cmp=(+a[sort.key]||0)-(+b[sort.key]||0);break;
           case 'status' : cmp=statusOrder[a.status]-statusOrder[b.status];break;
-          case 'dt'     : cmp=((a.dt==='―'?0:new Date(a.dt)) -
-                              (b.dt==='―'?0:new Date(b.dt)));break;
+          case 'dt'     : cmp=((a.dt==='―'?0:new Date(a.dt))-(b.dt==='―'?0:new Date(b.dt)));break;
           default       : cmp=a[sort.key].localeCompare(b[sort.key],'ja');
         }
         return sort.dir==='asc'?cmp:-cmp;
@@ -156,22 +157,16 @@
     }
 
     /* ===== テーブル描画 ===== */
+    let buildList=[];
     function renderTable(){
-      const tbody=document.querySelector('#tocTable tbody');
-      tbody.innerHTML='';
-
-      /* ヘッダマーク更新 */
+      const tbody=document.querySelector('#tocTable tbody'); tbody.innerHTML='';
       document.querySelectorAll('th[data-key]')
               .forEach(th=>th.classList.remove('sorted-asc','sorted-desc'));
-      if(sort.dir){
-        const th=document.querySelector(`th[data-key="${sort.key}"]`);
-        th.classList.add(sort.dir==='asc'?'sorted-asc':'sorted-desc');
-      }
+      if(sort.dir){ const th=document.querySelector(`th[data-key="${sort.key}"]`);
+        th.classList.add(sort.dir==='asc'?'sorted-asc':'sorted-desc'); }
 
-      const rows=filterAndSort(buildList);
-      rows.forEach(it=>{
-        const info=statusStarsMap[it.status] ?? {stars:it.status,cls:''};
-
+      filterAndSort(buildList).forEach(it=>{
+        const info=statusStarsMap[it.status]??{stars:it.status,cls:''};
         const tr=document.createElement('tr');
         tr.innerHTML=`
           <td>${it.grade}</td>
@@ -182,36 +177,32 @@
           <td>${it.dt}</td>
           <td>${it.hs}</td>
           <td>${it.clearsM}</td>
-          <td>${it.clears}</td>
-        `;
+          <td>${it.clears}</td>`;
         tbody.appendChild(tr);
       });
     }
 
     /* ===== ソートハンドラ ===== */
-    function attachSortHandlers(){
+    function attachSort(){
       document.querySelectorAll('th[data-key]').forEach(th=>{
         th.addEventListener('click',()=>{
-          const key=th.getAttribute('data-key');
-          if(sort.key===key && sort.dir) sort.dir = sort.dir==='asc' ? 'desc':'asc';
-          else { sort.key=key; sort.dir='desc'; }
+          const k=th.dataset.key;
+          if(sort.key===k && sort.dir){ sort.dir = sort.dir==='asc'?'desc':'asc'; }
+          else { sort.key=k; sort.dir='desc'; }
           renderTable();
         });
       });
     }
 
-    /* ===== 初期化 ===== */
-    window.onload = async ()=>{
+    /* ===== 起動 ===== */
+    window.onload=async()=>{
       const drills = await loadDrills();
       buildList    = buildListFromDrills(drills);
       initFilters(drills);
-      attachSortHandlers();
-
-      /* イベント */
+      attachSort();
       document.getElementById('search').addEventListener('input',renderTable);
       document.getElementById('gradeFilter').addEventListener('change',renderTable);
       document.getElementById('unitFilter').addEventListener('change',renderTable);
-
       renderTable();
     };
   </script>
