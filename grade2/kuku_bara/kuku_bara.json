@@ -8,6 +8,6 @@
   {"grade":"2","unit":"九九","no":7,"name":"七の段の九九（ばら）","file":"grade2/kuku_bara/七の段の九九（ばら）.html","ns":"multiplication7bara_v1_"},
   {"grade":"2","unit":"九九","no":8,"name":"八の段の九九（ばら）","file":"grade2/kuku_bara/八の段の九九（ばら）.html","ns":"multiplication8bara_v1_"},
   {"grade":"2","unit":"九九","no":9,"name":"九の段の九九（ばら）","file":"grade2/kuku_bara/九の段の九九（ばら）.html","ns":"multiplication9bara_v1_"},
-  {"grade":"2","unit":"九九","no":10,"name":"九九（10問）","file":"grade2/kuku_bara/九九.html","ns":"multiplication_random10_v1_"},
+  {"grade":"2","unit":"九九","no":10,"name":"九九","file":"grade2/kuku_bara/九九.html","ns":"multiplication_random10_v1_"},
   {"grade":"2","unit":"九九","no":11,"name":"九九81問チャレンジ","file":"grade2/kuku_bara/九九８１問チャレンジ.html","ns":"multiplication81_v1_"}
 ]
