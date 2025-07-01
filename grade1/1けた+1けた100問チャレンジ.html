@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>１けた＋１けた100問チャレンジ</title>
+  <style>
+    /* 「九九81問チャレンジ」のレイアウトを流用 */                       <!-- 同一スタイル部分 :contentReference[oaicite:0]{index=0} -->
+    body{font-family:sans-serif;background:#b3ecff;margin:20px;color:#333;font-size:2rem;line-height:1.5;}
+    h1,h2{text-align:center;margin:10px 0}
+    h2{font-size:1.8rem;margin-bottom:30px}
+    #problems-wrapper{max-width:600px;margin:0 auto 20px;padding:20px;border:2px solid #ccc;background:#fff;box-shadow:3px 3px 6px rgba(0,0,0,1);}
+    .problem{display:flex;align-items:center;margin-bottom:12px}
+    .problem-number{width:50px;text-align:right;margin-right:15px;font-weight:bold;font-size:1.6rem}
+    .problem-equation{flex:1;display:flex;align-items:center;font-size:1.6rem}
+    .problem-equation span{margin:0 8px}
+    input[type=number]{-moz-appearance:textfield;width:50px;font-size:1.6rem;margin-left:8px;padding:4px}
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    .button-area{text-align:center;margin-bottom:20px}
+    button{font-size:1.6rem;margin:0 8px;padding:8px 16px;background:#f2f2f2;border:1px solid #ccc;cursor:pointer}
+    button:hover{background:#e0e0e0}
+    button:disabled{background:#ddd;cursor:default}
+    #result-area{text-align:center;margin-bottom:20px}
+    #result{font-size:1.6rem;font-weight:bold;margin:8px 0}
+    #highScoreArea,#clearCountArea,#monthlyCountArea{font-size:1.4rem;margin:8px 0}
+    #history-area{font-size:1.2rem;margin:8px 0}
+    #history-list{list-style:none;padding:0;margin:0}
+    #history-list li{margin:2px 0}
+    .result-icon{margin-left:8px;font-size:1.6rem;font-weight:bold;white-space:nowrap}
+    .correct{color:red}.wrong{color:blue}
+    .status-stars{font-size:1.6rem}
+    .status-SS{background:linear-gradient(to right,red,orange,yellow,green,blue,indigo,violet);-webkit-background-clip:text;color:transparent}
+    .status-S{color:gold}
+    .status-A,.status-B,.status-C,.status-D,.status-NA{color:black}
+  </style>
+</head>
+<body>
+  <h1>けいさんドリル</h1>
+  <h2>１けた＋１けた100問チャレンジ</h2>
+
+  <div id="start-area" style="text-align:center;margin:30px 0;">
+    <button id="start-btn">スタート</button>
+  </div>
+
+  <div id="main" style="display:none;">
+    <div id="problems-wrapper"></div>
+    <div class="button-area">
+      <button id="check-answers">採点</button>
+      <button id="retry">もういちど</button>
+    </div>
+    <div id="result-area">
+      <div id="result"></div>
+      <div id="highScoreArea">ハイスコア：<span id="highScoreValue">0</span></div>
+      <div id="clearCountArea">クリア回数：<span id="clearCountValue">0</span></div>
+      <div id="monthlyCountArea">今月クリア：<span id="monthlyCountValue">0</span></div>
+      <div id="history-area">履歴（最新10件）<br><ul id="history-list"></ul></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== 定数 =====                                     <!-- 定数定義の書式は元コードと同じ :contentReference[oaicite:1]{index=1} -->
+    const NUM_QUESTIONS = 100;                // 0〜9 の全組合せ 10×10
+    const TIME_LIMIT    = NUM_QUESTIONS * 3;  // 300 秒
+    const POINT_PER_Q   = 5;                  // 1問5点
+    const MAX_SCORE     = NUM_QUESTIONS * POINT_PER_Q * 2; // 1000 点
+
+    // ===== ストレージキー =====
+    const APP_NS   = 'addition100_v1_';
+    const KEY_HS   = APP_NS + 'highScore';
+    const KEY_HIST = APP_NS + 'history';
+    const KEY_CLR  = APP_NS + 'clearCount';
+    const KEY_MON  = APP_NS + 'monthlyClear-';
+    const currentMonth = new Date().toISOString().slice(0,7);
+
+    // ===== 変数 =====
+    let problems=[],startTime=0,highScore=0,clearCount=0,monthlyCount=0;
+
+    // ===== util =====
+    const nowDT = () => new Date().toLocaleString();
+    const ls    = localStorage;
+    const scrollCenter = el => el.scrollIntoView({behavior:'smooth',block:'center'});
+
+    function statusOf(score){
+      const r = score / MAX_SCORE;
+      if(r >= 0.75) return 'SS';
+      if(r >= 0.60) return 'S';
+      if(r >= 0.50) return 'A';
+      if(r >= 0.40) return 'B';
+      if(r >= 0.25) return 'C';
+      return 'D';
+    }
+    function starsFor(status){return {SS:'★★★★★',S:'★★★★',A:'★★★',B:'★★',C:'★',D:'',NA:'ー'}[status];}
+    function clsFor(status){return {SS:'status-SS',S:'status-S',A:'status-A',B:'status-B',C:'status-C',D:'status-D',NA:'status-NA'}[status];}
+
+    // ===== localStorage =====
+    function loadState(){
+      highScore    = +ls.getItem(KEY_HS) || 0;
+      clearCount   = +ls.getItem(KEY_CLR) || 0;
+      monthlyCount = +ls.getItem(KEY_MON+currentMonth) || 0;
+    }
+    function saveState(){
+      ls.setItem(KEY_HS, highScore);
+      ls.setItem(KEY_CLR, clearCount);
+      ls.setItem(KEY_MON+currentMonth, monthlyCount);
+    }
+    function loadHistory(){ try{return JSON.parse(ls.getItem(KEY_HIST))||[]}catch{return[]} }
+    function pushHistory(e){ const h=loadHistory(); h.unshift(e); if(h.length>10) h.pop(); ls.setItem(KEY_HIST, JSON.stringify(h)); }
+
+    // ===== render =====
+    function renderHistory(){
+      const ul=document.getElementById('history-list');
+      ul.innerHTML='';
+      loadHistory().forEach(x=>{
+        const li=document.createElement('li');
+        li.textContent=`${x.datetime}：${x.score}（${x.status}）`;
+        ul.appendChild(li);
+      });
+    }
+    function updateStats(){
+      document.getElementById('highScoreValue').textContent=highScore;
+      document.getElementById('clearCountValue').textContent=clearCount;
+      document.getElementById('monthlyCountValue').textContent=monthlyCount;
+    }
+
+    // ===== 問題生成 =====
+    function generateProblems(){
+      const all=[];
+      for(let a=0;a<=9;a++)for(let b=0;b<=9;b++) all.push({a,b});
+      // シャッフル
+      for(let i=all.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [all[i],all[j]]=[all[j],all[i]];
+      }
+      problems=all;
+    }
+    function displayProblems(){
+      const wrap=document.getElementById('problems-wrapper');
+      wrap.innerHTML='';
+      problems.forEach((p,i)=>{
+        const row=document.createElement('div'); row.className='problem';
+        const num=document.createElement('div'); num.className='problem-number'; num.textContent=(i+1)+'.';
+        const eq=document.createElement('div'); eq.className='problem-equation';
+        eq.innerHTML=`<span>${p.a}</span><span>＋</span><span>${p.b}</span>=`;
+        const inp=document.createElement('input'); inp.type='number'; inp.id='ans-'+i;
+        inp.addEventListener('focus',()=>scrollCenter(inp));
+        inp.addEventListener('keydown',e=>{
+          if(e.key==='Enter'){
+            const nxt=document.getElementById('ans-'+(i+1));
+            nxt ? nxt.focus() : document.getElementById('check-answers').focus();
+          }
+        });
+        const icon=document.createElement('span'); icon.id='icon-'+i; icon.className='result-icon';
+        eq.append(inp,icon); row.append(num,eq); wrap.appendChild(row);
+      });
+    }
+
+    // ===== ゲーム制御 =====
+    function retry(){
+      startTime=Date.now();
+      generateProblems();
+      displayProblems();
+      document.getElementById('check-answers').disabled=false;
+      document.querySelectorAll('input[type=number]').forEach(i=>i.disabled=false);
+      document.getElementById('result').textContent='';
+      document.getElementById('ans-0').focus();
+    }
+
+    function checkAnswers(){
+      document.getElementById('check-answers').disabled=true;
+      let correct=0;
+      problems.forEach((p,i)=>{
+        const user=+document.getElementById('ans-'+i).value;
+        const ans=p.a + p.b;
+        const icon=document.getElementById('icon-'+i);
+        icon.textContent=''; icon.classList.remove('correct','wrong');
+        if(user===ans){ correct++; icon.textContent='○'; icon.classList.add('correct'); }
+        else{ icon.textContent=`× (正解:${ans})`; icon.classList.add('wrong'); }
+      });
+      document.querySelectorAll('input[type=number]').forEach(i=>i.disabled=true);
+
+      const elapsed=(Date.now()-startTime)/1000;
+      const rawScore=correct*POINT_PER_Q*(2-elapsed/TIME_LIMIT);
+      const score=Math.max(0,Math.min(Math.floor(rawScore),MAX_SCORE));
+      const status=statusOf(score);
+      const stars=starsFor(status); const cls=clsFor(status);
+
+      document.getElementById('result').innerHTML=
+        `スコア: <strong>${score}</strong> / ${MAX_SCORE}<br>`+
+        `正解数: ${correct}/${NUM_QUESTIONS}　時間: ${elapsed.toFixed(1)} 秒<br>`+
+        `ステータス：<span class='status-stars ${cls}'>${stars}</span>`;
+
+      if(score > highScore) highScore = score;
+      if(correct === NUM_QUESTIONS){ clearCount++; monthlyCount++; }
+      saveState(); pushHistory({datetime:nowDT(),score,status}); updateStats(); renderHistory();
+
+      document.getElementById('retry').focus();
+    }
+
+    // ===== 初期化 =====
+    window.addEventListener('DOMContentLoaded',()=>{
+      loadState(); updateStats(); renderHistory();
+      document.getElementById('check-answers').onclick=checkAnswers;
+      document.getElementById('retry').onclick=retry;
+      const startBtn=document.getElementById('start-btn');
+      startBtn.onclick=()=>{
+        document.getElementById('start-area').remove();
+        document.getElementById('main').style.display='';
+        retry();
+      };
+      // Enter キーでスタート
+      document.addEventListener('keydown',e=>{
+        if(e.key==='Enter' && document.getElementById('start-area')) startBtn.click();
+      });
+    });
+  </script>
+</body>
+</html>
