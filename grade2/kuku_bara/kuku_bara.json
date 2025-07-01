@@ -1,4 +1,4 @@
-[
+,[
   {"grade":"2","unit":"九九","no":1,"name":"一の段の九九（ばら）","file":"grade2/kuku_bara/一の段の九九（ばら）.html","ns":"multiplication1bara_v1_"},
   {"grade":"2","unit":"九九","no":2,"name":"二の段の九九（ばら）","file":"grade2/kuku_bara/二の段の九九（ばら）.html","ns":"multiplication2bara_v1_"},
   {"grade":"2","unit":"九九","no":3,"name":"三の段の九九（ばら）","file":"grade2/kuku_bara/三の段の九九（ばら）.html","ns":"multiplication3bara_v1_"},
@@ -8,7 +8,7 @@
   {"grade":"2","unit":"九九","no":7,"name":"七の段の九九（ばら）","file":"grade2/kuku_bara/七の段の九九（ばら）.html","ns":"multiplication7bara_v1_"},
   {"grade":"2","unit":"九九","no":8,"name":"八の段の九九（ばら）","file":"grade2/kuku_bara/八の段の九九（ばら）.html","ns":"multiplication8bara_v1_"},
   {"grade":"2","unit":"九九","no":9,"name":"九の段の九九（ばら）","file":"grade2/kuku_bara/九の段の九九（ばら）.html","ns":"multiplication9bara_v1_"},
-  {"grade":"2","unit":"九九","no":10,"name":"九九（10問）","file":"grade2/kuku_bara/九九.html","ns":"multiplication_1to9_v6_"}
+  {"grade":"2","unit":"九九","no":10,"name":"九九（10問）","file":"grade2/kuku_bara/九九.html","ns":"multiplication_1to9_v6_"},
   {
   "grade": "2",
   "unit": "九九",
