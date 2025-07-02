@@ -3,36 +3,110 @@
 <head>
   <meta charset="UTF-8" />
   <title>1けた+1けた</title>
-  <style>
-    /* レイアウトは従来と同じ */
-    body{font-family:sans-serif;background:#b3ecff;margin:20px;color:#333;font-size:2rem;line-height:1.5;}
-    h1,h2{text-align:center;margin:10px 0}
-    h2{font-size:1.8rem;margin-bottom:30px}
-    #problems-wrapper{max-width:600px;margin:0 auto 20px;padding:20px;border:2px solid #ccc;background:#fff;box-shadow:3px 3px 6px rgba(0,0,0,.8);}
-    .problem{display:flex;align-items:center;margin-bottom:12px}
-    .problem-number{width:50px;text-align:right;margin-right:15px;font-weight:bold;font-size:1.6rem}
-    .problem-equation{flex:1;display:flex;align-items:center;font-size:1.6rem}
-    .problem-equation span{margin:0 8px}
-    input[type=number]{-moz-appearance:textfield;width:50px;font-size:1.6rem;margin-left:8px;padding:4px}
-    input[type=number]::-webkit-outer-spin-button,
-    input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-    .button-area{text-align:center;margin-bottom:20px}
-    button{font-size:1.6rem;margin:0 8px;padding:8px 16px;background:#f2f2f2;border:1px solid #ccc;cursor:pointer}
-    button:hover{background:#e0e0e0}
-    button:disabled{background:#ddd;cursor:default}
-    #result-area{text-align:center;margin-bottom:20px}
-    #result{font-size:1.6rem;font-weight:bold;margin:8px 0}
-    #highScoreArea,#clearCountArea,#monthlyCountArea{font-size:1.4rem;margin:8px 0}
-    #history-area{font-size:1.2rem;margin:8px 0}
-    #history-list{list-style:none;padding:0;margin:0}
-    #history-list li{margin:2px 0}
-    .result-icon{margin-left:8px;font-size:1.6rem;font-weight:bold;white-space:nowrap}
-    .correct{color:red}.wrong{color:blue}
-    .status-stars{font-size:1.6rem}
-    .status-SS{background:linear-gradient(to right,red,orange,yellow,green,blue,indigo,violet);-webkit-background-clip:text;color:transparent}
-    .status-S{color:gold}
-    .status-A,.status-B,.status-C,.status-D,.status-NA{color:black}
-  </style>
+<style>
+  /* ===== レイアウト（「1けた−1けた.html」と同じサイズ感） ===== */
+  body{
+    font-family:sans-serif;
+    background:#b3ecff;
+    margin:20px;
+    color:#333;
+    font-size:2rem;           /* 全体の基準サイズ :contentReference[oaicite:0]{index=0} */
+    line-height:1.5;
+  }
+  h1,h2{
+    text-align:center;
+    margin:10px 0;
+  }
+  h2{
+    font-size:1.8rem;
+    margin-bottom:30px;
+  }
+
+  #problems-wrapper{
+    max-width:600px;
+    margin:0 auto 20px;
+    padding:20px;
+    border:2px solid #ccc;
+    background:#fff;
+    box-shadow:3px 3px 6px rgba(0,0,0,.1);
+  }
+
+  .problem{
+    display:flex;
+    align-items:center;
+    margin-bottom:20px;       /* ゆったり間隔 :contentReference[oaicite:1]{index=1} */
+  }
+  .problem-number{
+    width:60px;
+    text-align:right;
+    margin-right:20px;
+    font-weight:bold;
+    font-size:2rem;           /* 番号を大きく :contentReference[oaicite:2]{index=2} */
+  }
+  .problem-equation{
+    flex:1;
+    display:flex;
+    align-items:center;
+    font-size:2rem;           /* 式を大きく :contentReference[oaicite:3]{index=3} */
+  }
+  .problem-equation span{ margin:0 10px; }
+
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none;margin:0; }
+  input[type=number]{
+    -moz-appearance:textfield;
+    width:80px;               /* 解答欄を広げる :contentReference[oaicite:4]{index=4} */
+    font-size:2rem;           /* 数字を大きく */
+    margin-left:10px;
+    padding:5px;
+  }
+
+  .button-area{ text-align:center;margin-bottom:20px; }
+  button{
+    font-size:2rem;           /* ボタン文字を大きく :contentReference[oaicite:5]{index=5} */
+    margin:0 10px;
+    padding:10px 20px;        /* 余白も広げる :contentReference[oaicite:6]{index=6} */
+    background:#f2f2f2;
+    border:1px solid #ccc;
+    cursor:pointer;
+  }
+  button:hover{ background:#e0e0e0; }
+  button:disabled{ background:#ddd;cursor:default; }
+
+  #result-area{ text-align:center;margin-bottom:20px; }
+  #result{
+    font-size:2rem;           /* スコア行を大きく :contentReference[oaicite:7]{index=7} */
+    font-weight:bold;
+    margin:10px 0;
+  }
+  #highScoreArea,#clearCountArea,#monthlyCountArea{
+    font-size:1.8rem;         /* ハイスコア・回数表示 :contentReference[oaicite:8]{index=8} */
+    margin:10px 0;
+  }
+
+  #history-area{
+    font-size:1.6rem;         /* 履歴リスト :contentReference[oaicite:9]{index=9} */
+    margin:10px 0;
+  }
+  #history-list{ list-style:none;padding:0;margin:0; }
+  #history-list li{ margin:4px 0; }
+
+  .result-icon{
+    margin-left:10px;
+    font-size:2rem;           /* ○×マークを大きく :contentReference[oaicite:10]{index=10} */
+    font-weight:bold;
+    white-space:nowrap;
+  }
+  .correct{ color:red; }
+  .wrong  { color:blue; }
+
+  /* ステータス用の星表示（元のまま） */
+  .status-stars{ font-size:2rem; }
+  .status-SS{background:linear-gradient(to right,red,orange,yellow,green,blue,indigo,violet);-webkit-background-clip:text;color:transparent;}
+  .status-S{color:gold;}
+  .status-A,.status-B,.status-C,.status-D,.status-NA{color:black;}
+</style>
+
 </head>
 <body>
   <h1>けいさんドリル</h1>
