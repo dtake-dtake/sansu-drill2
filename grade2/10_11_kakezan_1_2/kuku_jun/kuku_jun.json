@@ -1,6 +1,6 @@
 [
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 1,
     "name": "一の段の九九（じゅんばん）",
@@ -8,7 +8,7 @@
     "ns": "multiplication1jun_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 2,
     "name": "二の段の九九（じゅんばん）",
@@ -16,7 +16,7 @@
     "ns": "multiplication2jun_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 3,
     "name": "三の段の九九（じゅんばん）",
@@ -24,7 +24,7 @@
     "ns": "multiplication3jun_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 4,
     "name": "四の段の九九（じゅんばん）",
@@ -32,7 +32,7 @@
     "ns": "multiplication4jun_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 5,
     "name": "五の段の九九（じゅんばん）",
@@ -40,7 +40,7 @@
     "ns": "multiplication5jun_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 6,
     "name": "六の段の九九（じゅんばん）",
@@ -48,7 +48,7 @@
     "ns": "multiplication6jun_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 7,
     "name": "七の段の九九（じゅんばん）",
@@ -56,7 +56,7 @@
     "ns": "multiplication7jun_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 8,
     "name": "八の段の九九（じゅんばん）",
@@ -64,7 +64,7 @@
     "ns": "multiplication8jun_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 9,
     "name": "九の段の九九（じゅんばん）",
