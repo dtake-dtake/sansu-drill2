@@ -249,9 +249,9 @@
         const ls      = localStorage;
         const hs       = ls.getItem(d.ns+'highScore')  || '―';
         // 各クリアカウントを localStorage から取得
-        const dailyClears = ls.getItem(dailyKeyOf(d.ns)) || '0';
-        const monthlyClears = ls.getItem(monthKeyOf(d.ns)) || '0';
-        const totalClears = ls.getItem(totalKeyOf(d.ns)) || '0';
+        const dailyClears = ls.getItem(dailyKeyOf(d.ns)) || '―';   // ★変更: 0の場合に「―」を表示
+        const monthlyClears = ls.getItem(monthKeyOf(d.ns)) || '―'; // ★変更: 0の場合に「―」を表示
+        const totalClears = ls.getItem(totalKeyOf(d.ns)) || '―';   // ★変更: 0の場合に「―」を表示
         
         // ★変更: ドリル全体のステータスを取得
         const overallStatus = ls.getItem(overallStatusKeyOf(d.ns)) || '―'; 
@@ -352,7 +352,7 @@
           case 'dailyClears': // dailyClearsを追加
           case 'monthlyClears': // monthlyClearsを追加
           case 'totalClears': // totalClearsを追加
-            cmp=(+a[sort.key]||0)-(+b[sort.key]||0);
+            cmp=(+a[sort.key]||0)-(+b[sort.key]||0); // 「―」が入っていても0に変換される
             break;
           case 'status' : // ★変更: ステータスソートを文字の星に対応させる
              // 星の数を数値に変換して比較
