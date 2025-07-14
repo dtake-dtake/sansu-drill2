@@ -4,33 +4,175 @@
   <meta charset="UTF-8" />
   <title>算数ドリルアプリ 目次</title>
   <style>
-    body{font-family:sans-serif;margin:20px;background:#e0f7fa;}
-    h1{text-align:center;margin-bottom:8px;}
+    body{
+      font-family: 'HiraMaruProN-W4', 'ヒラギノ丸ゴ ProN W4', 'メイリオ', Meiryo, sans-serif; /* ドリルアプリのフォントに合わせる */
+      margin: 20px;
+      background: #e3f2fd; /* 単一の薄い水色 */
+      color: #333;
+    }
+    h1{
+      text-align:center;
+      margin-bottom:15px;
+      color: #64b5f6;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      font-size: 2.8rem;
+      letter-spacing: 1px;
+    }
 
     /* ───── フィルター UI ───── */
-    #controls{display:flex;justify-content:center;margin-bottom:12px;}
-    #controls select,#controls input{margin:0 4px;padding:6px;border:1px solid #ccc;border-radius:4px;}
-    #search{width:240px;}
+    #controls{
+      display:flex;
+      justify-content:center;
+      margin-bottom:20px;
+    }
+    #controls select, #controls input{
+      margin:0 6px;
+      padding: 8px 12px;
+      border: 1px solid #90caf9;
+      border-radius: 12px;
+      background-color: #ffffff;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+      transition: all 0.2s ease;
+      font-family: 'HiraMaruProN-W4', 'ヒラギノ丸ゴ ProN W4', 'メイリオ', Meiryo, sans-serif; /* 修正: ドリルアプリのフォントに合わせる */
+      color: #555;
+      box-sizing: border-box; /* パディングを含めて幅を計算 */
+    }
+    #controls select:hover, #controls input:hover {
+      transform: translateY(-1px);
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    #search {
+      /* 虫眼鏡アイコンを完全に削除するため、背景画像と関連CSSを削除 */
+      background-image: none;
+      padding-left: 12px; /* 通常のパディングに戻す */
+      width:240px;
+    }
 
     /* ───── テーブル ───── */
-    table{width:100%;background:#fff;border-collapse:collapse;margin-top:8px;}
-    th,td{border:1px solid #ccc;padding:8px;text-align:center;white-space:nowrap;}
-    th{background:#f5f5f5;cursor:pointer;position:relative;}
-    th.sorted-asc{background:#b2ebf2;}
-    th.sorted-desc{background:#ffe0b2;}
+    table{
+      width:100%;
+      background:#ffffff;
+      border-collapse:collapse;
+      margin-top:8px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      table-layout: fixed; /* 列幅を固定する */
+    }
+    th,td{
+      border: 1px solid #e0e0e0;
+      padding:10px 8px;
+      text-align:center;
+      /* white-space:nowrap; この設定は個別のtdで上書きする */
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    th{
+      background:#bbdefb; /* 単一の落ち着いた青 */
+      color: #333;
+      text-shadow: none;
+      cursor:pointer;
+      position:relative;
+      border-bottom: 2px solid #90caf9;
+    }
+    th.sorted-asc{background:#c5e1a5;}
+    th.sorted-desc{background:#ffccbc;}
     th.no-sort{cursor:default;}
-    tr:hover{background:#fafafa;}
-    a{color:blue;text-decoration:none;}
-    a:hover{text-decoration:underline;}
+    tr:nth-child(even) {
+      background-color: #f5f5f5;
+    }
+    tr:hover{
+      background-color: #e8f5e9;
+      transform: none;
+      transition: background-color 0.1s ease-in-out;
+    }
+    a{
+      color: #1565c0;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    a:hover{
+      text-decoration: none;
+      background-color: #e3f2fd;
+      color: #0d47a1;
+    }
 
+    /* 列幅の調整 */
+    th[data-key="grade"], td:nth-child(1) { width: 7%; } /* 学年 (2文字対応に最小限) */
+    th[data-key="unit"], td:nth-child(2) { width: 15%; } /* 単元を広く */
+    th:nth-child(3), td:nth-child(3) { /* 名前列 */
+        width: 25%; /* 名前をさらに広く */
+        white-space: normal; /* テキストを折り返す */
+        text-align: center; /* 中央揃えに変更 */
+    }
+    th[data-key="status"], td:nth-child(4) { width: 8%; } /* ステータスを狭く */
+    th[data-key="dt"], td:nth-child(5) { width: 12%; } /* 最終チャレンジ */
+    th[data-key="hs"], td:nth-child(6) { width: 8%; } /* ハイスコアを狭く */
+    th[data-key="dailyClears"], td:nth-child(7) { width: 7%; } /* 今日のクリア */
+    th[data-key="monthlyClears"], td:nth-child(8) { width: 8%; } /* 今月のクリア */
+    th[data-key="totalClears"], td:nth-child(9) { /* 合計クリア */
+        width: 8%; 
+        text-align: center; /* 中央揃えに変更 */
+    }
     /* ───── ステータス（星） ───── */
-    .status-stars{font-size:1.2rem;}
-    .status-SS{background:linear-gradient(to right,red,orange,yellow,green,blue,indigo,violet);
-               -webkit-background-clip:text;color:transparent;}
-    .status-S {color:gold;}
-    .status-A {color:silver;}
-    .status-B {color:#cd7f32;}
-    .status-C,.status-D{color:gray;}
+    .status-stars{
+      font-size:0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 60px;
+    }
+    .status-stars::before{
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      vertical-align: middle;
+      margin: 0 1px;
+    }
+    /* SS - キラキラする虹色スター */
+    .status-SS::before {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="url(%23rainbowGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="rainbowGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="red"/><stop offset="16%" stop-color="orange"/><stop offset="33%" stop-color="gold"/><stop offset="50%" stop-color="lime"/><stop offset="66%" stop-color="dodgerblue"/><stop offset="83%" stop-color="darkviolet"/><stop offset="100%" stop-color="hotpink"/></linearGradient></defs><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
+      animation: sparkle 1s infinite alternate;
+    }
+    /* S - ゴールドスター */
+    .status-S::before {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ffc107" stroke="#ffa000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
+    }
+    /* A - シルバースター */
+    .status-A::before {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#bdbdbd" stroke="#9e9e9e" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
+    }
+    /* B - ブロンズスター */
+    .status-B::before {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#a1887f" stroke="#795548" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
+    }
+    /* C, D - グレースター */
+    .status-C::before, .status-D::before {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#9e9e9e" stroke="#757575" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
+      opacity: 0.8;
+    }
+    /* ― の場合 */
+    .status--::before {
+      content: '―';
+      font-size: 1.3rem;
+      color: gray;
+      width: auto;
+      height: auto;
+      background-image: none;
+    }
+
+    @keyframes sparkle {
+      0% { filter: brightness(1); transform: scale(1); }
+      50% { filter: brightness(1.2); transform: scale(1.05); }
+      100% { filter: brightness(1); transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -47,13 +189,13 @@
       <tr>
         <th data-key="grade">学年</th>
         <th data-key="unit">単元</th>
-        <th data-key="no">No.</th>
         <th class="no-sort">名前</th>
         <th data-key="status">ステータス</th>
         <th data-key="dt">最終チャレンジ</th>
         <th data-key="hs">ハイスコア</th>
-        <th data-key="clearsM">今月</th>
-        <th data-key="clears">クリア回数</th>
+        <th data-key="dailyClears">今日</th>
+        <th data-key="monthlyClears">今月</th>
+        <th data-key="totalClears">合計</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -62,28 +204,27 @@
   <script>
     /* ===== ここだけ変えれば読み込む JSON を増やせる ===== */
     const JSON_FILES = [
-      //'data/drills.json',      // 既存ファイル
-      //'data/drills_extra.json' // 追加したいファイル（例）
-      'grade2/kuku_jun/kuku_jun.json',
-      'grade2/kuku_bara/kuku_bara.json',
+      'grade2/10_11_kakezan_1_2/kuku_jun.json',
+      'grade2/10_11_kakezan_1_2/kuku_bara/kuku_bara.json', // 修正されたパス
       'grade1/addition_drills.json',
+      // 新しいドリルJSONファイルを追加する場合の例
+      // 'grade3/division_drills.json',
     ];
 
     /* ===== ステータス変換テーブル ===== */
     const statusOrder    = {SS:6,S:5,A:4,B:3,C:2,D:1,'―':0};
     const statusStarsMap = {
-      SS:{stars:'★★★★★',cls:'status-SS'},
-      S :{stars:'★★★★', cls:'status-S' },
-      A :{stars:'★★★',  cls:'status-A' },
-      B :{stars:'★★',   cls:'status-B' },
-      C :{stars:'★',    cls:'status-C' },
-      D :{stars:'ー',     cls:'status-D' },
-      '―':{stars:'',    cls:''}
+      SS:{stars:'SS',cls:'status-SS'},
+      S :{stars:'S', cls:'status-S' },
+      A :{stars:'A',  cls:'status-A' },
+      B :{stars:'B',   cls:'status-B' },
+      C :{stars:'C',    cls:'status-C' },
+      D :{stars:'D',     cls:'status-D' },
+      '―':{stars:'―',    cls:'status--'}
     };
 
     /* ===== データロード ===== */
     async function loadDrills(){
-      // 複数 JSON を並列ロード → 1 つの配列へ fl at
       const lists = await Promise.all(
         JSON_FILES.map(async f => {
           try{
@@ -96,23 +237,54 @@
       return lists.flat();
     }
 
-    /* ===== 月次キー ===== */
-    const monthKeyOf = ns => ns + 'monthlyClear-' + new Date().toISOString().slice(0,7);
+    // 各クリアカウントのキーを生成するヘルパー関数
+    const dailyKeyOf = ns => ns + 'dailyClear-' + new Date().toISOString().slice(0,10); // YYYY-MM-DD
+    const monthKeyOf = ns => ns + 'monthlyClear-' + new Date().toISOString().slice(0,7); // YYYY-MM
+    const totalKeyOf = ns => ns + 'clearCount'; // 合計は既存のまま
+    const overallStatusKeyOf = ns => ns + 'overallStatus'; // ★追加: ドリル全体のステータスのキー
 
     /* ===== データ組み立て ===== */
     function buildListFromDrills(drills){
       return drills.map(d=>{
         const ls      = localStorage;
         const hs       = ls.getItem(d.ns+'highScore')  || '―';
-        const clears   = ls.getItem(d.ns+'clearCount') || '0';
-        const clearsM  = ls.getItem(monthKeyOf(d.ns))  || '0';
-        let status='―', dt='―';
+        // 各クリアカウントを localStorage から取得
+        const dailyClears = ls.getItem(dailyKeyOf(d.ns)) || '0';
+        const monthlyClears = ls.getItem(monthKeyOf(d.ns)) || '0';
+        const totalClears = ls.getItem(totalKeyOf(d.ns)) || '0';
+        
+        // ★変更: ドリル全体のステータスを取得
+        const overallStatus = ls.getItem(overallStatusKeyOf(d.ns)) || '―'; 
+
+        let status='―';
+        let fullDt='―';
+        let displayDt='―';
+
         try{
           const hist = JSON.parse(ls.getItem(d.ns+'history')||'[]');
-          if(hist.length){ status = hist[0].status || status; dt = hist[0].datetime || dt; }
+          if(hist.length){
+            // status = hist[0].status || status; // 履歴のstatusは使用しない
+            fullDt = hist[0].datetime || fullDt;
+            if (fullDt !== '―') {
+              displayDt = fullDt.split('T')[0];
+            }
+          }
         }catch{}
-        return {grade:d.grade,unit:d.unit??'',no:d.no??'',name:d.name,file:d.file,
-                status,dt,hs,clears,clearsM};
+        return {
+                grade: d.grade,
+                unit: d.unit ?? '', // unit が null/undefined の場合に対応
+                unitOrder: d.unitOrder, // unitOrder プロパティを追加
+                name: d.name,
+                file: d.file,
+                status: overallStatus, // ★変更: テーブルのstatus列はoverallStatusを使用
+                fullDt: fullDt,
+                displayDt: displayDt,
+                hs,
+                // 3つのクリアカウントを追加
+                dailyClears: dailyClears, 
+                monthlyClears: monthlyClears,
+                totalClears: totalClears
+               };
       });
     }
 
@@ -122,17 +294,28 @@
       const unitSel =document.getElementById('unitFilter');
       const grades=[...new Set(drills.map(d=>d.grade))]
                      .sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
-      const units=[...new Set(drills.map(d=>String(d.unit??'')))]
-                     .filter(v=>v!=='')
-                     .sort((a,b)=>(+a)-(+b));
+      // unitOrderを考慮した単元のソート
+      const units=[...new Set(drills.map(d=>({ unit: String(d.unit??''), unitOrder: d.unitOrder })))]
+                     .filter(u=>u.unit!=='')
+                     .sort((a,b)=>{
+                       // unitOrder があればそれを優先
+                       if (a.unitOrder !== undefined && b.unitOrder !== undefined) {
+                         return a.unitOrder - b.unitOrder;
+                       }
+                       // なければ従来の数値比較
+                       return (+a.unit) - (+b.unit);
+                     });
+
       gradeSel.innerHTML = '<option value="">学年</option>' +
                            grades.map(g=>`<option value="${g}">${g}</option>`).join('');
       unitSel.innerHTML  = '<option value="">単元</option>' +
-                           units.map(u=>`<option value="${u}">${u}</option>`).join('');
+                           units.map(u=>`<option value="${u.unit}">${u.unit}</option>`).join('');
     }
 
     /* ===== フィルター＆ソート ===== */
-    let sort = {key:'grade',dir:null};
+    let sort = {key:'grade',dir:'asc'}; // デフォルトソートを 'grade' の昇順に変更
+    let prevSortedData = []; // 重複表示判定のために、ソート・フィルター後のデータを保持
+
     function filterAndSort(data){
       const q  = document.getElementById('search').value.trim().toLowerCase();
       const gF = document.getElementById('gradeFilter').value;
@@ -143,20 +326,51 @@
         it.name.toLowerCase().includes(q)
       );
       if(!sort.dir) return arr;
-      return arr.sort((a,b)=>{
-        let cmp=0;
+      // まず学年でソートし、次に指定されたキーでソートする
+      // デフォルトのソート順は「学年」→「unitOrder」（または単元名）→「名前」とする
+      arr.sort((a,b)=>{
+        // 常に学年で一次ソート
+        let cmp = a.grade.localeCompare(b.grade, 'ja', {numeric: true});
+        if (cmp !== 0) return sort.dir === 'asc' ? cmp : -cmp; // 学年が異なればここで決定
+
+        // 学年が同じ場合、ソートキーに応じて二次ソート
+        if(sort.key === 'grade') { // gradeがソートキーの場合、unitでソート
+            // unitOrder があればそれを使う。なければ元のunitを数値変換して使う。
+            let unitCmp = (a.unitOrder || (+a.unit || 0)) - (b.unitOrder || (+b.unit || 0));
+            if (unitCmp !== 0) return sort.dir === 'asc' ? unitCmp : -unitCmp;
+            // 単元も同じなら名前でソート
+            return sort.dir === 'asc' ? a.name.localeCompare(b.name, 'ja') : -a.name.localeCompare(b.name, 'ja');
+        }
+
+        // 指定されたソートキーでの比較
         switch(sort.key){
-          case 'unit'   : cmp=(+a.unit||0)-(+b.unit||0);break;
-          case 'no'     : cmp=(+a.no||0 )-(+b.no||0 );break;
+          case 'unit'   :
+            // unitOrder があればそれを使う。なければ元のunitを数値変換して使う。
+            cmp=(a.unitOrder || (+a.unit || 0)) - (b.unitOrder || (+b.unit || 0));
+            break;
           case 'hs':
-          case 'clears':
-          case 'clearsM': cmp=(+a[sort.key]||0)-(+b[sort.key]||0);break;
-          case 'status' : cmp=statusOrder[a.status]-statusOrder[b.status];break;
-          case 'dt'     : cmp=((a.dt==='―'?0:new Date(a.dt))-(b.dt==='―'?0:new Date(b.dt)));break;
+          case 'dailyClears': // dailyClearsを追加
+          case 'monthlyClears': // monthlyClearsを追加
+          case 'totalClears': // totalClearsを追加
+            cmp=(+a[sort.key]||0)-(+b[sort.key]||0);
+            break;
+          case 'status' : // ★変更: ステータスソートを文字の星に対応させる
+             // 星の数を数値に変換して比較
+             const starsA = (a.status === '○') ? 0.5 : (a.status === '―') ? 0 : a.status.length;
+             const starsB = (b.status === '○') ? 0.5 : (b.status === '―') ? 0 : b.status.length;
+             cmp = starsA - starsB;
+             break;
+          case 'dt'     :
+            // 日付文字列を比較可能にする (ISO 8601形式を前提)
+            const dtA = a.fullDt === '―' ? '' : a.fullDt;
+            const dtB = b.fullDt === '―' ? '' : b.fullDt;
+            cmp = dtA.localeCompare(dtB);
+            break;
           default       : cmp=a[sort.key].localeCompare(b[sort.key],'ja');
         }
         return sort.dir==='asc'?cmp:-cmp;
       });
+      return arr;
     }
 
     /* ===== テーブル描画 ===== */
@@ -168,20 +382,32 @@
       if(sort.dir){ const th=document.querySelector(`th[data-key="${sort.key}"]`);
         th.classList.add(sort.dir==='asc'?'sorted-asc':'sorted-desc'); }
 
-      filterAndSort(buildList).forEach(it=>{
-        const info=statusStarsMap[it.status]??{stars:it.status,cls:''};
+      const sortedData = filterAndSort(buildList);
+      let lastGrade = null;
+      let lastUnit = null;
+
+      sortedData.forEach(it=>{
+        // const info=statusStarsMap[it.status]??{stars:it.status,cls:''}; // 変更
         const tr=document.createElement('tr');
+
+        // 学年と単元の重複表示を避ける
+        const displayGrade = (it.grade !== lastGrade) ? it.grade : '';
+        const displayUnit = (it.unit !== lastUnit || it.grade !== lastGrade) ? it.unit : ''; // 学年が変われば単元も表示
+
         tr.innerHTML=`
-          <td>${it.grade}</td>
-          <td>${it.unit}</td>
-          <td>${it.no}</td>
+          <td>${displayGrade}</td>
+          <td>${displayUnit}</td>
           <td><a href="${it.file}" target="_blank">${it.name}</a></td>
-          <td><span class="status-stars ${info.cls}">${info.stars}</span></td>
-          <td>${it.dt}</td>
+          <td>${it.status}</td> <td>${it.displayDt}</td>
           <td>${it.hs}</td>
-          <td>${it.clearsM}</td>
-          <td>${it.clears}</td>`;
+          <td>${it.dailyClears}</td>   
+          <td>${it.monthlyClears}</td> 
+          <td>${it.totalClears}</td>   
+          `;
         tbody.appendChild(tr);
+
+        lastGrade = it.grade;
+        lastUnit = it.unit;
       });
     }
 
@@ -191,7 +417,17 @@
         th.addEventListener('click',()=>{
           const k=th.dataset.key;
           if(sort.key===k && sort.dir){ sort.dir = sort.dir==='asc'?'desc':'asc'; }
-          else { sort.key=k; sort.dir='desc'; }
+          else {
+            sort.key=k;
+            // 新しいソートキーが選択されたら、デフォルトは降順にする (よく使われるのは降順のため)
+            // ただし、学年や単元、日付、クリア数などは昇順が自然な場合もあるため調整
+            if (k === 'grade' || k === 'unit' || k === 'dt' || 
+                k === 'dailyClears' || k === 'monthlyClears' || k === 'totalClears' || k === 'hs' || k === 'status') { // statusも昇順が自然
+                sort.dir = 'asc'; 
+            } else {
+                sort.dir = 'desc';
+            }
+          }
           renderTable();
         });
       });
