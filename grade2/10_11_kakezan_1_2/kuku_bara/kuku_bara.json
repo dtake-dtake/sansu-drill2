@@ -1,6 +1,6 @@
 [
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 9,
     "name": "九の段の九九（ばらばら）",
@@ -8,7 +8,7 @@
     "ns": "multiplication9bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 8,
     "name": "八の段の九九（ばらばら）",
@@ -16,7 +16,7 @@
     "ns": "multiplication8bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 7,
     "name": "七の段の九九（ばらばら）",
@@ -24,7 +24,7 @@
     "ns": "multiplication7bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 6,
     "name": "六の段の九九（ばらばら）",
@@ -32,7 +32,7 @@
     "ns": "multiplication6bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 5,
     "name": "五の段の九九（ばらばら）",
@@ -40,7 +40,7 @@
     "ns": "multiplication5bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 4,
     "name": "四の段の九九（ばらばら）",
@@ -48,7 +48,7 @@
     "ns": "multiplication4bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 3,
     "name": "三の段の九九（ばらばら）",
@@ -56,7 +56,7 @@
     "ns": "multiplication3bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 2,
     "name": "二の段の九九（ばらばら）",
@@ -64,7 +64,7 @@
     "ns": "multiplication2bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 1,
     "name": "一の段の九九（ばらばら）",
@@ -72,7 +72,7 @@
     "ns": "multiplication1bara_v1_"
   },
   {
-    "grade": "2年",
+    "grade": "2",
     "unit": "かけ算",
     "unitOrder": 10,
     "name": "九九（１０問）",
