@@ -2,7 +2,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 9,
+    "unitOrder": 19,
     "name": "九の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/九の段の九九（ばらばら）.html",
     "ns": "multiplication9bara_v1_"
@@ -10,7 +10,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 8,
+    "unitOrder": 18,
     "name": "八の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/八の段の九九（ばらばら）.html",
     "ns": "multiplication8bara_v1_"
@@ -18,7 +18,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 7,
+    "unitOrder": 17,
     "name": "七の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/七の段の九九（ばらばら）.html",
     "ns": "multiplication7bara_v1_"
@@ -26,7 +26,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 6,
+    "unitOrder": 16,
     "name": "六の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/六の段の九九（ばらばら）.html",
     "ns": "multiplication6bara_v1_"
@@ -34,7 +34,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 5,
+    "unitOrder": 15,
     "name": "五の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/五の段の九九（ばらばら）.html",
     "ns": "multiplication5bara_v1_"
@@ -42,7 +42,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 4,
+    "unitOrder": 14,
     "name": "四の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/四の段の九九（ばらばら）.html",
     "ns": "multiplication4bara_v1_"
@@ -50,7 +50,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 3,
+    "unitOrder": 13,
     "name": "三の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/三の段の九九（ばらばら）.html",
     "ns": "multiplication3bara_v1_"
@@ -58,7 +58,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 2,
+    "unitOrder": 12,
     "name": "二の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/二の段の九九（ばらばら）.html",
     "ns": "multiplication2bara_v1_"
@@ -66,7 +66,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 1,
+    "unitOrder": 11,
     "name": "一の段の九九（ばらばら）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/一の段の九九（ばらばら）.html",
     "ns": "multiplication1bara_v1_"
@@ -74,7 +74,7 @@
   {
     "grade": "2",
     "unit": "かけ算",
-    "unitOrder": 10,
+    "unitOrder": 21,
     "name": "九九（１０問）",
     "file": "grade2/10_11_kakezan_1_2/kuku_bara/九九（１０問）.html",
     "ns": "multiplication_1to9_v6_"
